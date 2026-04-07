@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>開発生産管理システム</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root{--pri:#2563eb;--pri-l:#dbeafe;--pri-d:#1d4ed8;--ok:#16a34a;--ok-l:#dcfce7;--ok-ll:#f0fdf4;
+--warn:#f59e0b;--warn-l:#fef3c7;--warn-ll:#fffbeb;--err:#dc2626;--err-l:#fee2e2;
+--g50:#f9fafb;--g100:#f3f4f6;--g200:#e5e7eb;--g300:#d1d5db;--g400:#9ca3af;--g500:#6b7280;
+--g600:#4b5563;--g700:#374151;--g800:#1f2937;--r:6px;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:"Segoe UI","Hiragino Sans","Meiryo",sans-serif;background:var(--g100);color:var(--g800);font-size:13px;line-height:1.5;}
+
+/* Login */
+.login-wrap{display:flex;align-items:center;justify-content:center;min-height:100vh;background:linear-gradient(135deg,#1e3a5f,#2563eb);}
+.login-box{background:#fff;border-radius:12px;padding:40px;width:90%;max-width:400px;box-shadow:0 20px 60px rgba(0,0,0,.3);}
+.login-box h1{font-size:20px;margin-bottom:4px;color:var(--g800);} .login-box p{font-size:13px;color:var(--g500);margin-bottom:20px;}
+.login-box .fg{margin-bottom:14px;} .login-box label{display:block;font-size:12px;font-weight:600;margin-bottom:3px;color:var(--g600);}
+.login-box input{width:100%;padding:10px 12px;border:1px solid var(--g300);border-radius:var(--r);font-size:14px;outline:none;}
+.login-box input:focus{border-color:var(--pri);box-shadow:0 0 0 3px rgba(37,99,235,.1);}
+.login-box .btn{width:100%;padding:12px;font-size:14px;} .login-err{color:var(--err);font-size:12px;margin-top:8px;display:none;}
+
+/* Header */
+.hdr{background:var(--pri);color:#fff;padding:8px 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.15);flex-wrap:wrap;gap:8px;}
+.hdr-l{display:flex;align-items:center;gap:12px;} .hdr h1{font-size:16px;font-weight:700;}
+.hdr-r{display:flex;gap:6px;align-items:center;flex-wrap:wrap;}
+.hdr .user-info{font-size:11px;opacity:.8;}
+
+/* Year */
+.yr-sel{display:flex;align-items:center;gap:4px;background:rgba(255,255,255,.12);border-radius:var(--r);padding:3px 4px;}
+.yr-btn{padding:5px 14px;font-size:13px;font-weight:700;cursor:pointer;background:transparent;color:rgba(255,255,255,.7);border:none;border-radius:4px;transition:all .12s;}
+.yr-btn:hover{background:rgba(255,255,255,.15);color:#fff;} .yr-btn.active{background:rgba(255,255,255,.25);color:#fff;}
+
+/* Buttons */
+.btn{padding:6px 12px;border:none;border-radius:var(--r);font-size:12px;font-weight:600;cursor:pointer;transition:all .12s;display:inline-flex;align-items:center;gap:4px;}
+.btn:hover{opacity:.88;} .btn-p{background:var(--pri);color:#fff;} .btn-d{background:var(--err);color:#fff;}
+.btn-o{background:#fff;color:var(--g700);border:1px solid var(--g300);} .btn-w{background:rgba(255,255,255,.18);color:#fff;border:1px solid rgba(255,255,255,.3);}
+.btn-sm{padding:3px 8px;font-size:11px;} .btn-s{background:var(--ok);color:#fff;}
+
+/* Tabs */
+.sheet-tabs{background:#fff;border-bottom:2px solid var(--g200);display:flex;padding:0 20px;position:sticky;top:46px;z-index:99;}
+.sh-tab{padding:10px 22px;font-size:13px;font-weight:600;color:var(--g500);cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-2px;transition:all .12s;white-space:nowrap;}
+.sh-tab:hover{color:var(--g700);background:var(--g50);} .sh-tab.active{color:var(--pri);border-bottom-color:var(--pri);background:#fff;}
+
+/* Container */
+.wrap{padding:16px 20px;max-width:100%;}
+
+/* Spreadsheet */
+.ss-wrap{overflow-x:auto;background:#fff;border-radius:var(--r);box-shadow:0 1px 3px rgba(0,0,0,.08);border:1px solid var(--g200);}
+.ss{border-collapse:collapse;font-size:12px;width:max-content;min-width:100%;}
+.ss th{background:var(--g100);padding:6px 10px;text-align:center;font-weight:600;color:var(--g600);border:1px solid var(--g200);white-space:nowrap;position:sticky;top:0;z-index:2;font-size:11px;}
+.ss th.cg-dev{background:var(--pri-l);color:var(--pri-d);} .ss th.cg-sub{background:#fef3c7;color:#92400e;}
+.ss th.cg-prod{background:var(--ok-l);color:#166534;} .ss th.cg-ship{background:#fde68a;color:#78350f;}
+.ss td{padding:4px 6px;border:1px solid var(--g200);text-align:center;vertical-align:middle;min-width:90px;}
+.ss .rn{position:sticky;left:0;z-index:1;background:#fff;text-align:left;font-weight:600;min-width:140px;padding-left:10px;white-space:nowrap;}
+.ss tr:hover td{background:var(--g50);} .ss tr:hover .rn{background:var(--pri-l);}
+.ss tr.parent-row .rn{font-weight:700;} .ss tr.child-row .rn{color:var(--g500);padding-left:20px;}
+.ss tr.empty-row td{border-left:none;border-right:none;height:8px;background:var(--g100);}
+
+/* Band colors for parent rows */
+.band-0{background:#D6E4F0;} .band-1{background:#E2EFDA;} .band-2{background:#FCE4D6;} .band-3{background:#E2D9F3;}
+
+/* Cell states */
+.cell-empty{background:var(--warn-ll);} .cell-done{background:var(--ok-ll);}
+.cell-disabled{background:var(--g200) !important;color:var(--g400);pointer-events:none;}
+.cell-disabled input,.cell-disabled select{visibility:hidden;}
+
+/* Cell inputs */
+.ss input[type="date"],.ss input[type="text"]{width:100%;padding:2px 4px;border:1px solid transparent;border-radius:3px;font-size:11px;outline:none;background:transparent;text-align:center;cursor:pointer;}
+.ss input:hover{border-color:var(--g300);} .ss input:focus{border-color:var(--pri);background:#fff;box-shadow:0 0 0 2px rgba(37,99,235,.15);}
+.ss select{padding:1px 2px;border:1px solid transparent;border-radius:3px;font-size:10px;outline:none;background:transparent;cursor:pointer;}
+.ss select:hover{border-color:var(--g300);} .ss select:focus{border-color:var(--pri);}
+
+/* Master badges */
+.ms-new{color:#CC0000;font-weight:700;} .ms-no{color:#aaa;background:#e8e8e8;border-radius:4px;padding:0 4px;}
+.ms-same{background:#f0f0f0;border-radius:4px;padding:0 4px;} .ms-part{color:#92400e;font-weight:600;}
+.ms-sel{display:inline-flex;gap:0;border-radius:var(--r);overflow:hidden;border:1px solid var(--g300);}
+.ms-sel button{padding:3px 8px;font-size:10px;font-weight:600;cursor:pointer;background:#fff;color:var(--g500);border:none;border-right:1px solid var(--g300);transition:all .1s;}
+.ms-sel button:last-child{border-right:none;} .ms-sel button:hover{background:var(--g50);}
+.ms-sel button.act-new{background:var(--pri);color:#fff;} .ms-sel button.act-part{background:var(--warn);color:#fff;}
+.ms-sel button.act-same{background:var(--g400);color:#fff;} .ms-sel button.act-no{background:var(--g300);color:var(--g600);}
+
+/* Toast */
+.toast{position:fixed;bottom:20px;right:20px;background:var(--g800);color:#fff;padding:10px 18px;border-radius:var(--r);font-size:13px;z-index:300;transform:translateY(80px);opacity:0;transition:all .3s;}
+.toast.show{transform:translateY(0);opacity:1;}
+
+/* Loading */
+.loading{text-align:center;padding:60px;color:var(--g400);font-size:16px;}
+
+/* Saving indicator */
+.saving{position:fixed;top:50px;right:20px;background:var(--warn);color:#fff;padding:6px 14px;border-radius:var(--r);font-size:12px;font-weight:600;z-index:200;display:none;}
+.saving.show{display:block;}
+
+@media(max-width:768px){.wrap{padding:10px;}.sh-tab{padding:8px 14px;font-size:12px;}.hdr{padding:8px 12px;}}
+</style>
+</head>
+<body>
+
+<!-- Login Screen -->
+<div id="loginScreen" class="login-wrap">
+  <div class="login-box">
+    <h1>📋 開発生産管理システム</h1>
+    <p>メールアドレスとパスワードでログイン</p>
+    <div class="fg"><label>メールアドレス</label><input type="email" id="loginEmail" placeholder="name@example.com"></div>
+    <div class="fg"><label>パスワード</label><input type="password" id="loginPass" placeholder="パスワード"></div>
+    <button class="btn btn-p" onclick="doLogin()" style="width:100%;padding:12px;font-size:14px;">ログイン</button>
+    <button class="btn btn-o" onclick="doSignup()" style="width:100%;padding:10px;font-size:13px;margin-top:8px;">新規アカウント作成</button>
+    <div class="login-err" id="loginErr"></div>
+  </div>
+</div>
+
+<!-- App (hidden until login) -->
+<div id="appScreen" style="display:none;">
+  <div class="hdr">
+    <div class="hdr-l">
+      <h1>📋 開発生産管理</h1>
+      <div class="yr-sel" id="yearSel"></div>
+    </div>
+    <div class="hdr-r">
+      <span class="user-info" id="userInfo"></span>
+      <button class="btn btn-w" onclick="doLogout()">ログアウト</button>
+    </div>
+  </div>
+  <div class="sheet-tabs" id="sheetTabs"></div>
+  <div class="wrap" id="content"><div class="loading">読み込み中...</div></div>
+</div>
+
+<div class="saving" id="savingInd">保存中...</div>
+<div class="toast" id="toast"></div>
+
+<script>
+// ═══════════════════════════════════════
+// Supabase Config
+// ═══════════════════════════════════════
+const SB_URL = 'https://ootpmvitsggulcqvufsd.supabase.co';
+const SB_KEY = 'sb_publishable_3trYXswFYXxq5cQji3G81g_woQLl_Xk';
+const sb = supabase.createClient(SB_URL, SB_KEY);
+
+// ═══════════════════════════════════════
+// Constants
+// ═══════════════════════════════════════
+const TABS = ['overview','dev','sub','prod','ship'];
+const TAB_LABELS = {overview:'一覧',dev:'開発フェーズ',sub:'副資材フェーズ',prod:'量産フェーズ',ship:'ship'};
+const COMPANIES = ['クロダルマ','シンメン','NSP'];
+const CATEGORIES = ['ファン','バッテリー','ケーブル','充電器','その他'];
+const MASTER_DEFS = [
+  {key:'package',label:'パッケージ',opts:['新規','去年と同様','不要']},
+  {key:'blister',label:'ブリスター',opts:['新規','去年と同様','不要']},
+  {key:'manual',label:'説明書',opts:['新規','去年と同様','不要']},
+  {key:'mold',label:'金型',opts:['新規','部分変更','去年と同様']},
+  {key:'decoration',label:'加飾指示',opts:['新規','部分変更','去年と同様']},
+  {key:'pse',label:'PSE',opts:['新規','去年と同様','不要']}
+];
+const DEV_COLS = [
+  {key:'factoryQuote',label:'工場見積り',grp:'A'},{key:'customerQuote',label:'顧客見積り',grp:'A'},
+  {key:'salesContract',label:'売買契約書',grp:'A'},{key:'moldInvoice',label:'金型代請求書',grp:'A'},
+  {key:'advanceInvoice',label:'前受金請求書',grp:'A'},
+  {key:'moldName',label:'金型名',grp:'B-moldname',isText:true},
+  {key:'moldArrange',label:'金型手配',grp:'B-mold'},{key:'moldSurface',label:'金型表面処理',grp:'B-mold'},
+  {key:'procInstruction',label:'加工指示',grp:'B-deco'},
+  {key:'procConfirm',label:'加工顧客確認',grp:'C-deco',hasMethod:true}
+];
+const SUB_LABELS = [
+  {key:'internal',label:'初回社内確認'},{key:'customer',label:'お客様確認'},
+  {key:'rev1',label:'修正1回目お客様確認'},{key:'rev2',label:'修正2回目お客様確認'},
+  {key:'rev3',label:'修正3回目お客様確認'},{key:'final',label:'最終確認完了'}
+];
+const PROD_COLS = [
+  {key:'colorBox',label:'カラーボックス',rst:null},{key:'blister',label:'ブリスター',rst:'blister'},
+  {key:'manual',label:'取扱説明書',rst:null},{key:'colorBoxMat',label:'カラーBOX材料',rst:null},
+  {key:'outerBox',label:'外箱マーク',rst:null},{key:'label',label:'ラベル',rst:null},
+  {key:'labelMat',label:'ラベル材質',rst:null},{key:'pse',label:'PSE',rst:'battery'},
+  {key:'un383',label:'UN38.3',rst:'battery'},{key:'msds',label:'MSDS',rst:'battery'},
+  {key:'nonAppl',label:'非該当証明書',rst:'battery'},{key:'selfInsp',label:'自主検査記録',rst:'battery'}
+];
+const SHIP_COLS = [
+  {key:'shipDoc',label:'船積み書類依頼'},{key:'bl',label:'B/L受領'},{key:'invoice',label:'インボイス受領'},
+  {key:'packing',label:'パッキングリスト受領'},{key:'shipNotice',label:'船積み通知送付'},{key:'eta',label:'ETA確認'},
+  {key:'customsDoc',label:'通関書類送付'},{key:'customsDone',label:'通関完了'},
+  {key:'warehouse',label:'倉庫入荷'},{key:'inspect',label:'入荷検品'},{key:'delivered',label:'納品完了'}
+];
+const BAND_COLORS = ['band-0','band-1','band-2','band-3'];
+
+// ═══════════════════════════════════════
+// State
+// ═══════════════════════════════════════
+let DATA = [], YEARS = [], CUR_YEAR = 2026, activeTab = 'overview', currentUser = null;
+let saveTimer = null;
+
+// ═══════════════════════════════════════
+// Auth
+// ═══════════════════════════════════════
+async function checkAuth(){
+  const {data:{session}} = await sb.auth.getSession();
+  if(session){currentUser=session.user;showApp();}
+}
+async function doLogin(){
+  const email=document.getElementById('loginEmail').value.trim();
+  const pass=document.getElementById('loginPass').value;
+  if(!email||!pass){showLoginErr('メールとパスワードを入力してください');return;}
+  const{error}=await sb.auth.signInWithPassword({email,password:pass});
+  if(error){showLoginErr(error.message);return;}
+  const{data:{session}}=await sb.auth.getSession();
+  currentUser=session.user;showApp();
+}
+async function doSignup(){
+  const email=document.getElementById('loginEmail').value.trim();
+  const pass=document.getElementById('loginPass').value;
+  if(!email||!pass){showLoginErr('メールとパスワードを入力してください');return;}
+  if(pass.length<6){showLoginErr('パスワードは6文字以上');return;}
+  const{error}=await sb.auth.signUp({email,password:pass});
+  if(error){showLoginErr(error.message);return;}
+  showLoginErr('確認メールを送信しました。メール内のリンクをクリックしてからログインしてください。');
+  document.getElementById('loginErr').style.color='var(--ok)';
+}
+async function doLogout(){
+  await sb.auth.signOut();
+  currentUser=null;
+  document.getElementById('appScreen').style.display='none';
+  document.getElementById('loginScreen').style.display='flex';
+}
+function showLoginErr(msg){const e=document.getElementById('loginErr');e.textContent=msg;e.style.display='block';e.style.color='var(--err)';}
+function showApp(){
+  document.getElementById('loginScreen').style.display='none';
+  document.getElementById('appScreen').style.display='block';
+  document.getElementById('userInfo').textContent=currentUser.email;
+  loadData();
+}
+
+// ═══════════════════════════════════════
+// Data
+// ═══════════════════════════════════════
+async function loadData(){
+  const{data:years}=await sb.from('years').select('year').order('year');
+  YEARS=(years||[]).map(y=>y.year);
+  if(!YEARS.length){YEARS=[2026];}
+  CUR_YEAR=YEARS[YEARS.length-1];
+  await loadYear(CUR_YEAR);
+}
+async function loadYear(yr){
+  CUR_YEAR=yr;
+  const{data}=await sb.from('products').select('*').eq('year',yr).order('sort_order');
+  DATA=data||[];
+  render();
+}
+async function saveProduct(p){
+  document.getElementById('savingInd').classList.add('show');
+  p.updated_by=currentUser.email;
+  p.updated_at=new Date().toISOString();
+  const{error}=await sb.from('products').upsert(p);
+  if(error)toast('保存エラー: '+error.message);
+  document.getElementById('savingInd').classList.remove('show');
+}
+function debounceSave(p){
+  if(saveTimer)clearTimeout(saveTimer);
+  saveTimer=setTimeout(()=>saveProduct(p),300);
+}
+
+// ═══════════════════════════════════════
+// Restriction Logic
+// ═══════════════════════════════════════
+function isDevDis(p,c){
+  const m=p.master||{};
+  if(c.grp==='B-moldname')return m.mold!=='去年と同様';
+  if(c.grp==='B-mold'&&m.mold==='去年と同様')return true;
+  if((c.grp==='B-deco'||c.grp==='C-deco')&&m.decoration==='去年と同様')return true;
+  return false;
+}
+function isSubDis(p,type){const m=p.master||{};const v=type==='package'?m.package:m.manual;return v==='去年と同様'||v==='不要';}
+function isProdDis(p,c){
+  const m=p.master||{};
+  if(c.rst==='blister')return m.blister==='去年と同様'||m.blister==='不要';
+  if(c.rst==='battery')return p.category!=='バッテリー';
+  return false;
+}
+
+// ═══════════════════════════════════════
+// Render
+// ═══════════════════════════════════════
+function render(){
+  // Year tabs
+  document.getElementById('yearSel').innerHTML=
+    YEARS.map(y=>`<button class="yr-btn${CUR_YEAR===y?' active':''}" onclick="loadYear(${y})">${y}年度</button>`).join('');
+  // Sheet tabs
+  document.getElementById('sheetTabs').innerHTML=TABS.map(t=>
+    `<div class="sh-tab${activeTab===t?' active':''}" onclick="activeTab='${t}';render();">${TAB_LABELS[t]}</div>`
+  ).join('');
+  const ct=document.getElementById('content');
+  if(activeTab==='overview')ct.innerHTML=renderOverview();
+  else if(activeTab==='dev')ct.innerHTML=renderPhase('dev');
+  else if(activeTab==='sub')ct.innerHTML=renderPhase('sub');
+  else if(activeTab==='prod')ct.innerHTML=renderPhase('prod');
+  else if(activeTab==='ship')ct.innerHTML=renderPhase('ship');
+}
+
+// Group index for band colors
+function getGroupIdx(idx){
+  let g=-1;
+  for(let i=0;i<=idx;i++){if(DATA[i].is_parent)g++;}
+  return g;
+}
+
+function esc(s){const d=document.createElement('div');d.textContent=s;return d.innerHTML;}
+
+function masterBadge(val){
+  if(!val)return'<span style="color:var(--g400);">—</span>';
+  if(val==='新規')return`<span class="ms-new">${val}</span>`;
+  if(val==='不要')return`<span class="ms-no">${val}</span>`;
+  if(val==='去年と同様')return`<span class="ms-same">${val}</span>`;
+  if(val==='部分変更')return`<span class="ms-part">${val}</span>`;
+  return val;
+}
+
+function masterSelector(pid,key,cur,opts){
+  return`<div class="ms-sel">${opts.map(o=>{
+    let cls='';if(cur===o){cls=o==='新規'?'act-new':o==='部分変更'?'act-part':o==='去年と同様'?'act-same':'act-no';}
+    return`<button class="${cls}" onclick="setMaster('${pid}','${key}','${o}')">${o}</button>`;
+  }).join('')}</div>`;
+}
+
+// ── Overview ──
+function renderOverview(){
+  if(!DATA.length)return'<div class="loading">データがありません</div>';
+  let h=`<div class="ss-wrap"><table class="ss"><thead><tr>
+    <th class="rn">品番</th><th>会社名</th><th>カテゴリ</th>`;
+  MASTER_DEFS.forEach(m=>{h+=`<th>${m.label}</th>`;});
+  h+=`<th>更新者</th></tr></thead><tbody>`;
+  DATA.forEach((p,i)=>{
+    const g=getGroupIdx(i);
+    const band=p.is_parent?BAND_COLORS[g%4]:'';
+    const rowCls=p.is_parent?'parent-row':'child-row';
+    const m=p.master||{};
+    h+=`<tr class="${rowCls}"><td class="rn ${band}">${esc(p.code)}</td>
+      <td>${esc(p.company)}</td>
+      <td>${esc(p.category||'')}</td>`;
+    MASTER_DEFS.forEach(md=>{
+      h+=`<td>${masterSelector(p.id,md.key,m[md.key]||'',md.opts)}</td>`;
+    });
+    h+=`<td style="font-size:10px;color:var(--g400);">${p.updated_by?esc(p.updated_by.split('@')[0]):''}</td></tr>`;
+  });
+  h+=`</tbody></table></div>`;
+  return h;
+}
+
+// ── Phase sheets ──
+function renderPhase(phase){
+  if(!DATA.length)return'<div class="loading">データがありません</div>';
+  let cols,grpHeader;
+  if(phase==='dev'){
+    cols=DEV_COLS;
+    grpHeader=[{s:1,e:5,l:'見積り・契約・請求',c:'cg-dev'},{s:6,e:8,l:'金型',c:'cg-dev'},{s:9,e:9,l:'加工指示',c:'cg-dev'},{s:10,e:11,l:'顧客確認',c:'cg-dev'}];
+  }else if(phase==='sub'){
+    cols=[...SUB_LABELS.map(s=>({...s,subType:'package'})),...SUB_LABELS.map(s=>({key:s.key+'_m',label:s.label,subType:'manual'}))];
+    grpHeader=[{s:1,e:6,l:'パッケージ確認フロー',c:'cg-sub'},{s:7,e:12,l:'説明書確認フロー',c:'cg-sub'}];
+  }else if(phase==='prod'){
+    cols=PROD_COLS;
+    grpHeader=[{s:1,e:7,l:'資材データ',c:'cg-prod'},{s:8,e:12,l:'認証・検査',c:'cg-prod'}];
+  }else{
+    cols=SHIP_COLS;
+    grpHeader=[{s:1,e:6,l:'出荷',c:'cg-ship'},{s:7,e:11,l:'通関・納品',c:'cg-ship'}];
+  }
+
+  let h=`<div class="ss-wrap"><table class="ss"><thead><tr><th class="rn" rowspan="2">品番</th>`;
+  grpHeader.forEach(g=>{h+=`<th class="${g.c}" colspan="${g.e-g.s+1}">${g.l}</th>`;});
+  if(phase==='dev')h+=`<th class="cg-dev">連絡手段</th>`;
+  h+=`</tr><tr>`;
+  cols.forEach(c=>{h+=`<th>${c.label}</th>`;});
+  if(phase==='dev')h+=`<th>手段</th>`;
+  h+=`</tr></thead><tbody>`;
+
+  DATA.forEach((p,i)=>{
+    const g=getGroupIdx(i);
+    const band=p.is_parent?BAND_COLORS[g%4]:'';
+    const rowCls=p.is_parent?'parent-row':'child-row';
+    h+=`<tr class="${rowCls}"><td class="rn ${band}">${esc(p.code)}</td>`;
+
+    if(phase==='dev'){
+      const dev=p.dev||{};
+      cols.forEach(c=>{
+        if(!dev[c.key])dev[c.key]={};
+        const dis=isDevDis(p,c);
+        const v=dev[c.key];
+        if(c.isText){
+          h+=`<td class="${dis?'cell-disabled':v.text?'cell-done':'cell-empty'}"><input type="text" value="${esc(v.text||'')}" placeholder="" onchange="updDev('${p.id}','${c.key}','text',this.value)"></td>`;
+        }else{
+          h+=cellDate(dis,v.date||'',`updDev('${p.id}','${c.key}','date',this.value)`);
+        }
+      });
+      // 連絡手段
+      const pc=dev.procConfirm||{};
+      const disPc=isDevDis(p,{grp:'C-deco'});
+      h+=`<td class="${disPc?'cell-disabled':pc.method?'cell-done':'cell-empty'}"><select onchange="updDev('${p.id}','procConfirm','method',this.value)"><option value="">--</option>${['電話','WeChat','メール'].map(m=>`<option${pc.method===m?' selected':''}>${m}</option>`).join('')}</select></td>`;
+    }else if(phase==='sub'){
+      cols.forEach(c=>{
+        const sub=p.sub||{};const ty=c.subType;
+        if(!sub[ty])sub[ty]={};
+        const realKey=c.key.replace('_m','');
+        if(!sub[ty][realKey])sub[ty][realKey]={};
+        const dis=isSubDis(p,ty);
+        const v=sub[ty][realKey].date||'';
+        h+=cellDate(dis,v,`updSub('${p.id}','${ty}','${realKey}',this.value)`);
+      });
+    }else if(phase==='prod'){
+      const prod=p.prod||{};
+      cols.forEach(c=>{
+        if(!prod[c.key])prod[c.key]={};
+        const dis=isProdDis(p,c);
+        h+=cellDate(dis,prod[c.key].date||'',`updProd('${p.id}','${c.key}',this.value)`);
+      });
+    }else{
+      const ship=p.ship||{};
+      cols.forEach(c=>{
+        if(!ship[c.key])ship[c.key]={};
+        h+=cellDate(false,ship[c.key].date||'',`updShip('${p.id}','${c.key}',this.value)`);
+      });
+    }
+    h+=`</tr>`;
+  });
+  h+=`</tbody></table></div>`;
+  return h;
+}
+
+function cellDate(dis,val,onch){
+  if(dis)return`<td class="cell-disabled"><input type="date"></td>`;
+  const cls=val?'cell-done':'cell-empty';
+  return`<td class="${cls}"><input type="date" value="${val}" onchange="${onch}"></td>`;
+}
+
+// ═══════════════════════════════════════
+// Update handlers
+// ═══════════════════════════════════════
+async function setMaster(id,key,val){
+  const p=DATA.find(x=>x.id===id);if(!p)return;
+  if(!p.master)p.master={};
+  const old=p.master[key];
+  p.master[key]=val;
+  // Auto-set PSE to 不要 for non-battery
+  if(key==='category'||p.category!=='バッテリー'){/* handled in render */}
+  await saveProduct(p);
+  // Log edit
+  if(old!==val)logEdit(id,`master.${key}`,old||'',val);
+  render();
+}
+async function updDev(id,key,field,val){
+  const p=DATA.find(x=>x.id===id);if(!p)return;
+  if(!p.dev)p.dev={};if(!p.dev[key])p.dev[key]={};
+  const old=p.dev[key][field];
+  p.dev[key][field]=val;
+  debounceSave(p);render();
+  if(old!==val)logEdit(id,`dev.${key}.${field}`,old||'',val);
+}
+async function updSub(id,type,key,val){
+  const p=DATA.find(x=>x.id===id);if(!p)return;
+  if(!p.sub)p.sub={};if(!p.sub[type])p.sub[type]={};if(!p.sub[type][key])p.sub[type][key]={};
+  const old=p.sub[type][key].date;
+  p.sub[type][key].date=val;
+  debounceSave(p);render();
+  if(old!==val)logEdit(id,`sub.${type}.${key}`,old||'',val);
+}
+async function updProd(id,key,val){
+  const p=DATA.find(x=>x.id===id);if(!p)return;
+  if(!p.prod)p.prod={};if(!p.prod[key])p.prod[key]={};
+  const old=p.prod[key].date;
+  p.prod[key].date=val;
+  debounceSave(p);render();
+  if(old!==val)logEdit(id,`prod.${key}`,old||'',val);
+}
+async function updShip(id,key,val){
+  const p=DATA.find(x=>x.id===id);if(!p)return;
+  if(!p.ship)p.ship={};if(!p.ship[key])p.ship[key]={};
+  const old=p.ship[key].date;
+  p.ship[key].date=val;
+  debounceSave(p);render();
+  if(old!==val)logEdit(id,`ship.${key}`,old||'',val);
+}
+async function logEdit(pid,field,oldVal,newVal){
+  await sb.from('edit_logs').insert({product_id:pid,field,old_value:oldVal,new_value:newVal,edited_by:currentUser.email});
+}
+
+// ═══════════════════════════════════════
+// Utilities
+// ═══════════════════════════════════════
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);}
+
+// Enter key on login
+document.getElementById('loginPass').addEventListener('keydown',e=>{if(e.key==='Enter')doLogin();});
+document.getElementById('loginEmail').addEventListener('keydown',e=>{if(e.key==='Enter')document.getElementById('loginPass').focus();});
+
+// Init
+checkAuth();
+</script>
+</body>
+</html>
