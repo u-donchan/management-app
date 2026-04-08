@@ -11,141 +11,194 @@
 --g50:#f9fafb;--g100:#f3f4f6;--g200:#e5e7eb;--g300:#d1d5db;--g400:#9ca3af;--g500:#6b7280;
 --g600:#4b5563;--g700:#374151;--g800:#1f2937;--r:6px;}
 *{margin:0;padding:0;box-sizing:border-box;}
-body{font-family:"Segoe UI","Hiragino Sans","Meiryo",sans-serif;background:var(--g100);color:var(--g800);font-size:13px;line-height:1.5;}
+body{font-family:"Segoe UI","Hiragino Sans","Meiryo",sans-serif;background:var(--g100);color:var(--g800);font-size:12px;line-height:1.4;}
 
 /* Login */
 .login-wrap{display:flex;align-items:center;justify-content:center;min-height:100vh;background:linear-gradient(135deg,#1e3a5f,#2563eb);}
 .login-box{background:#fff;border-radius:12px;padding:40px;width:90%;max-width:400px;box-shadow:0 20px 60px rgba(0,0,0,.3);}
-.login-box h1{font-size:20px;margin-bottom:4px;color:var(--g800);} .login-box p{font-size:13px;color:var(--g500);margin-bottom:20px;}
+.login-box h1{font-size:20px;margin-bottom:4px;} .login-box p{font-size:13px;color:var(--g500);margin-bottom:20px;}
 .login-box .fg{margin-bottom:14px;} .login-box label{display:block;font-size:12px;font-weight:600;margin-bottom:3px;color:var(--g600);}
 .login-box input{width:100%;padding:10px 12px;border:1px solid var(--g300);border-radius:var(--r);font-size:14px;outline:none;}
 .login-box input:focus{border-color:var(--pri);box-shadow:0 0 0 3px rgba(37,99,235,.1);}
-.login-box .btn{width:100%;padding:12px;font-size:14px;} .login-err{color:var(--err);font-size:12px;margin-top:8px;display:none;}
+.login-err{color:var(--err);font-size:12px;margin-top:8px;display:none;}
 
 /* Header */
-.hdr{background:var(--pri);color:#fff;padding:8px 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.15);flex-wrap:wrap;gap:8px;}
-.hdr-l{display:flex;align-items:center;gap:12px;} .hdr h1{font-size:16px;font-weight:700;}
-.hdr-r{display:flex;gap:6px;align-items:center;flex-wrap:wrap;}
-.hdr .user-info{font-size:11px;opacity:.8;}
+.hdr{background:var(--pri);color:#fff;padding:6px 16px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.15);flex-wrap:wrap;gap:6px;}
+.hdr-l{display:flex;align-items:center;gap:10px;} .hdr h1{font-size:14px;font-weight:700;}
+.hdr-r{display:flex;gap:5px;align-items:center;flex-wrap:wrap;}
+.hdr .user-info{font-size:10px;opacity:.8;}
 
 /* Year */
-.yr-sel{display:flex;align-items:center;gap:4px;background:rgba(255,255,255,.12);border-radius:var(--r);padding:3px 4px;}
-.yr-btn{padding:5px 14px;font-size:13px;font-weight:700;cursor:pointer;background:transparent;color:rgba(255,255,255,.7);border:none;border-radius:4px;transition:all .12s;}
+.yr-sel{display:flex;align-items:center;gap:3px;background:rgba(255,255,255,.12);border-radius:var(--r);padding:2px 3px;}
+.yr-btn{padding:3px 10px;font-size:11px;font-weight:700;cursor:pointer;background:transparent;color:rgba(255,255,255,.7);border:none;border-radius:4px;position:relative;}
 .yr-btn:hover{background:rgba(255,255,255,.15);color:#fff;} .yr-btn.active{background:rgba(255,255,255,.25);color:#fff;}
+.yr-del{position:absolute;top:-4px;right:-4px;width:14px;height:14px;border-radius:50%;background:var(--err);color:#fff;font-size:9px;line-height:14px;text-align:center;cursor:pointer;display:none;border:1px solid rgba(255,255,255,.5);}
+.yr-btn:hover .yr-del{display:block;}
+.yr-new{padding:3px 8px;font-size:11px;font-weight:600;cursor:pointer;background:rgba(255,255,255,.2);color:#fff;border:1px dashed rgba(255,255,255,.4);border-radius:4px;}
 
 /* Buttons */
-.btn{padding:6px 12px;border:none;border-radius:var(--r);font-size:12px;font-weight:600;cursor:pointer;transition:all .12s;display:inline-flex;align-items:center;gap:4px;}
+.btn{padding:4px 10px;border:none;border-radius:var(--r);font-size:11px;font-weight:600;cursor:pointer;transition:all .12s;display:inline-flex;align-items:center;gap:3px;}
 .btn:hover{opacity:.88;} .btn-p{background:var(--pri);color:#fff;} .btn-d{background:var(--err);color:#fff;}
 .btn-o{background:#fff;color:var(--g700);border:1px solid var(--g300);} .btn-w{background:rgba(255,255,255,.18);color:#fff;border:1px solid rgba(255,255,255,.3);}
-.btn-sm{padding:3px 8px;font-size:11px;} .btn-s{background:var(--ok);color:#fff;}
+.btn-sm{padding:2px 6px;font-size:10px;} .btn-s{background:var(--ok);color:#fff;}
 
 /* Tabs */
-.sheet-tabs{background:#fff;border-bottom:2px solid var(--g200);display:flex;padding:0 20px;position:sticky;top:46px;z-index:99;}
-.sh-tab{padding:10px 22px;font-size:13px;font-weight:600;color:var(--g500);cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-2px;transition:all .12s;white-space:nowrap;}
-.sh-tab:hover{color:var(--g700);background:var(--g50);} .sh-tab.active{color:var(--pri);border-bottom-color:var(--pri);background:#fff;}
+.sheet-tabs{background:#fff;border-bottom:2px solid var(--g200);display:flex;padding:0 16px;position:sticky;top:34px;z-index:99;}
+.sh-tab{padding:7px 16px;font-size:12px;font-weight:600;color:var(--g500);cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-2px;white-space:nowrap;}
+.sh-tab:hover{color:var(--g700);background:var(--g50);} .sh-tab.active{color:var(--pri);border-bottom-color:var(--pri);}
 
-/* Container */
-.wrap{padding:16px 20px;max-width:100%;}
+.wrap{padding:10px 16px;}
 
 /* Spreadsheet */
 .ss-wrap{overflow-x:auto;background:#fff;border-radius:var(--r);box-shadow:0 1px 3px rgba(0,0,0,.08);border:1px solid var(--g200);}
-.ss{border-collapse:collapse;font-size:12px;width:max-content;min-width:100%;}
-.ss th{background:var(--g100);padding:6px 10px;text-align:center;font-weight:600;color:var(--g600);border:1px solid var(--g200);white-space:nowrap;position:sticky;top:0;z-index:2;font-size:11px;}
+.ss{border-collapse:collapse;font-size:11px;width:max-content;min-width:100%;}
+.ss th{background:var(--g100);padding:3px 6px;text-align:center;font-weight:600;color:var(--g600);border:1px solid var(--g200);white-space:nowrap;position:sticky;top:0;z-index:2;font-size:10px;}
 .ss th.cg-dev{background:var(--pri-l);color:var(--pri-d);} .ss th.cg-sub{background:#fef3c7;color:#92400e;}
 .ss th.cg-prod{background:var(--ok-l);color:#166534;} .ss th.cg-ship{background:#fde68a;color:#78350f;}
-.ss td{padding:4px 6px;border:1px solid var(--g200);text-align:center;vertical-align:middle;min-width:90px;}
-.ss .rn{position:sticky;left:0;z-index:1;background:#fff;text-align:left;font-weight:600;min-width:140px;padding-left:10px;white-space:nowrap;}
+.ss td{padding:2px 4px;border:1px solid var(--g200);text-align:center;vertical-align:middle;min-width:78px;}
+.ss .rn{position:sticky;left:0;z-index:1;background:#fff;text-align:left;font-weight:600;min-width:100px;max-width:120px;padding:2px 6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .ss tr:hover td{background:var(--g50);} .ss tr:hover .rn{background:var(--pri-l);}
-.ss tr.parent-row .rn{font-weight:700;} .ss tr.child-row .rn{color:var(--g500);padding-left:20px;}
-.ss tr.empty-row td{border-left:none;border-right:none;height:8px;background:var(--g100);}
+.ss tr.parent-row .rn{font-weight:700;font-size:11px;} .ss tr.child-row .rn{color:var(--g500);padding-left:14px;font-size:10px;}
+.ss tr.empty-row td{height:4px;background:var(--g100);padding:0;}
+.band-0{background:#D6E4F0 !important;} .band-1{background:#E2EFDA !important;} .band-2{background:#FCE4D6 !important;} .band-3{background:#E2D9F3 !important;}
 
-/* Band colors for parent rows */
-.band-0{background:#D6E4F0;} .band-1{background:#E2EFDA;} .band-2{background:#FCE4D6;} .band-3{background:#E2D9F3;}
-
-/* Cell states */
+/* Cell */
 .cell-empty{background:var(--warn-ll);} .cell-done{background:var(--ok-ll);}
-.cell-disabled{background:var(--g200) !important;color:var(--g400);pointer-events:none;}
+.cell-disabled{background:var(--g200) !important;pointer-events:none;}
 .cell-disabled input,.cell-disabled select{visibility:hidden;}
-
-/* Cell inputs */
-.ss input[type="date"],.ss input[type="text"]{width:100%;padding:2px 4px;border:1px solid transparent;border-radius:3px;font-size:11px;outline:none;background:transparent;text-align:center;cursor:pointer;}
+.ss input[type="date"],.ss input[type="text"]{width:100%;padding:1px 2px;border:1px solid transparent;border-radius:2px;font-size:10px;outline:none;background:transparent;text-align:center;}
 .ss input:hover{border-color:var(--g300);} .ss input:focus{border-color:var(--pri);background:#fff;box-shadow:0 0 0 2px rgba(37,99,235,.15);}
-.ss select{padding:1px 2px;border:1px solid transparent;border-radius:3px;font-size:10px;outline:none;background:transparent;cursor:pointer;}
-.ss select:hover{border-color:var(--g300);} .ss select:focus{border-color:var(--pri);}
+.ss select{padding:0 1px;border:1px solid transparent;border-radius:2px;font-size:9px;outline:none;background:transparent;}
 
 /* Master badges */
-.ms-new{color:#CC0000;font-weight:700;} .ms-no{color:#aaa;background:#e8e8e8;border-radius:4px;padding:0 4px;}
-.ms-same{background:#f0f0f0;border-radius:4px;padding:0 4px;} .ms-part{color:#92400e;font-weight:600;}
-.ms-sel{display:inline-flex;gap:0;border-radius:var(--r);overflow:hidden;border:1px solid var(--g300);}
-.ms-sel button{padding:3px 8px;font-size:10px;font-weight:600;cursor:pointer;background:#fff;color:var(--g500);border:none;border-right:1px solid var(--g300);transition:all .1s;}
+.ms-new{color:#CC0000;font-weight:700;} .ms-no{color:#aaa;background:#e8e8e8;border-radius:3px;padding:0 3px;font-size:10px;}
+.ms-same{background:#f0f0f0;border-radius:3px;padding:0 3px;font-size:10px;} .ms-part{color:#92400e;font-weight:600;}
+.ms-sel{display:inline-flex;border-radius:4px;overflow:hidden;border:1px solid var(--g300);}
+.ms-sel button{padding:2px 6px;font-size:9px;font-weight:600;cursor:pointer;background:#fff;color:var(--g500);border:none;border-right:1px solid var(--g300);}
 .ms-sel button:last-child{border-right:none;} .ms-sel button:hover{background:var(--g50);}
 .ms-sel button.act-new{background:var(--pri);color:#fff;} .ms-sel button.act-part{background:var(--warn);color:#fff;}
 .ms-sel button.act-same{background:var(--g400);color:#fff;} .ms-sel button.act-no{background:var(--g300);color:var(--g600);}
 
-/* Toast */
-.toast{position:fixed;bottom:20px;right:20px;background:var(--g800);color:#fff;padding:10px 18px;border-radius:var(--r);font-size:13px;z-index:300;transform:translateY(80px);opacity:0;transition:all .3s;}
+/* Progress */
+.prog{display:flex;align-items:center;gap:3px;}
+.prog-bar{flex:1;height:4px;background:var(--g200);border-radius:2px;overflow:hidden;min-width:30px;}
+.prog-fill{height:100%;border-radius:2px;} .pf-lo{background:var(--err);} .pf-mi{background:var(--warn);} .pf-hi{background:var(--ok);}
+
+/* Modal */
+.mo{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:200;align-items:center;justify-content:center;}
+.mo.active{display:flex;}
+.mo-box{background:#fff;border-radius:10px;width:90%;max-width:620px;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.25);}
+.mo-hd{padding:14px 18px;border-bottom:1px solid var(--g200);display:flex;justify-content:space-between;align-items:center;}
+.mo-hd h2{font-size:15px;} .mo-cl{background:none;border:none;font-size:20px;cursor:pointer;color:var(--g400);} .mo-cl:hover{color:var(--g700);}
+.mo-bd{padding:16px 18px;} .mo-ft{padding:10px 18px;border-top:1px solid var(--g200);display:flex;justify-content:flex-end;gap:6px;}
+.fg{margin-bottom:10px;} .fg label{display:block;font-size:11px;font-weight:600;color:var(--g600);margin-bottom:2px;}
+.fg input,.fg select,.fg textarea{width:100%;padding:6px 8px;border:1px solid var(--g300);border-radius:var(--r);font-size:12px;outline:none;font-family:inherit;}
+.fg input:focus,.fg select:focus{border-color:var(--pri);box-shadow:0 0 0 3px rgba(37,99,235,.1);}
+.fg-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;}
+.ms-label{font-size:11px;font-weight:600;color:var(--g700);margin-bottom:4px;}
+.ms-row{display:flex;align-items:center;gap:8px;margin-bottom:6px;padding:4px 0;border-bottom:1px solid var(--g100);}
+.ms-row .ms-name{min-width:80px;font-weight:600;font-size:11px;}
+
+/* New year modal */
+.ny-info{background:var(--pri-l);border-radius:var(--r);padding:10px;margin-bottom:12px;font-size:11px;color:var(--pri-d);}
+.ny-list{max-height:250px;overflow-y:auto;border:1px solid var(--g200);border-radius:var(--r);}
+.ny-item{display:flex;align-items:center;gap:6px;padding:6px 10px;border-bottom:1px solid var(--g100);font-size:11px;}
+.ny-item:last-child{border-bottom:none;} .ny-item input[type="checkbox"]{width:14px;height:14px;}
+
+/* Toast & saving */
+.toast{position:fixed;bottom:16px;right:16px;background:var(--g800);color:#fff;padding:8px 14px;border-radius:var(--r);font-size:12px;z-index:300;transform:translateY(60px);opacity:0;transition:all .3s;}
 .toast.show{transform:translateY(0);opacity:1;}
-
-/* Loading */
-.loading{text-align:center;padding:60px;color:var(--g400);font-size:16px;}
-
-/* Saving indicator */
-.saving{position:fixed;top:50px;right:20px;background:var(--warn);color:#fff;padding:6px 14px;border-radius:var(--r);font-size:12px;font-weight:600;z-index:200;display:none;}
+.saving{position:fixed;top:38px;right:16px;background:var(--warn);color:#fff;padding:4px 10px;border-radius:var(--r);font-size:10px;font-weight:600;z-index:200;display:none;}
 .saving.show{display:block;}
 
-@media(max-width:768px){.wrap{padding:10px;}.sh-tab{padding:8px 14px;font-size:12px;}.hdr{padding:8px 12px;}}
+.empty{text-align:center;padding:30px;color:var(--g400);} .empty p{font-size:13px;margin:6px 0 10px;}
+@media(max-width:768px){.wrap{padding:6px;}.fg-row{grid-template-columns:1fr;}.sh-tab{padding:6px 10px;font-size:11px;}}
 </style>
 </head>
 <body>
 
-<!-- Login Screen -->
+<!-- Login -->
 <div id="loginScreen" class="login-wrap">
   <div class="login-box">
     <h1>📋 開発生産管理システム</h1>
     <p>メールアドレスとパスワードでログイン</p>
     <div class="fg"><label>メールアドレス</label><input type="email" id="loginEmail" placeholder="name@example.com"></div>
     <div class="fg"><label>パスワード</label><input type="password" id="loginPass" placeholder="パスワード"></div>
-    <button class="btn btn-p" onclick="doLogin()" style="width:100%;padding:12px;font-size:14px;">ログイン</button>
-    <button class="btn btn-o" onclick="doSignup()" style="width:100%;padding:10px;font-size:13px;margin-top:8px;">新規アカウント作成</button>
+    <button class="btn btn-p" onclick="doLogin()" style="width:100%;padding:10px;font-size:13px;">ログイン</button>
     <div class="login-err" id="loginErr"></div>
   </div>
 </div>
 
-<!-- App (hidden until login) -->
+<!-- App -->
 <div id="appScreen" style="display:none;">
   <div class="hdr">
-    <div class="hdr-l">
-      <h1>📋 開発生産管理</h1>
-      <div class="yr-sel" id="yearSel"></div>
-    </div>
+    <div class="hdr-l"><h1>📋 開発生産管理</h1><div class="yr-sel" id="yearSel"></div></div>
     <div class="hdr-r">
+      <button class="btn btn-w" onclick="openAdd()">＋ 新規登録</button>
       <span class="user-info" id="userInfo"></span>
-      <button class="btn btn-w" onclick="doLogout()">ログアウト</button>
+      <button class="btn btn-w btn-sm" onclick="doLogout()">ログアウト</button>
     </div>
   </div>
   <div class="sheet-tabs" id="sheetTabs"></div>
-  <div class="wrap" id="content"><div class="loading">読み込み中...</div></div>
+  <div class="wrap" id="content"><div class="empty">読み込み中...</div></div>
+</div>
+
+<!-- Add/Edit Modal -->
+<div class="mo" id="addMo">
+  <div class="mo-box">
+    <div class="mo-hd"><h2 id="addTitle">新規商品登録</h2><button class="mo-cl" onclick="closeMo('addMo')">&times;</button></div>
+    <div class="mo-bd">
+      <input type="hidden" id="editId">
+      <div class="fg-row">
+        <div class="fg"><label>会社名 *</label><select id="aCompany"></select></div>
+        <div class="fg"><label>品番 *</label><input type="text" id="aCode"></div>
+        <div class="fg"><label>カテゴリ</label>
+          <select id="aCat" onchange="onCatChange()"><option value="">--</option><option>ファン</option><option>バッテリー</option><option>ケーブル</option><option>充電器</option><option>その他</option></select>
+        </div>
+      </div>
+      <div class="fg"><label>親品番？</label><select id="aParent"><option value="true">親品番</option><option value="false">子品番</option></select></div>
+      <div style="margin-top:6px;">
+        <div class="ms-label">📌 品番マスター設定</div>
+        <div id="masterFields"></div>
+      </div>
+    </div>
+    <div class="mo-ft">
+      <button class="btn btn-o" onclick="closeMo('addMo')">キャンセル</button>
+      <button class="btn btn-p" id="saveBtn" onclick="saveNewProduct()">登録</button>
+    </div>
+  </div>
+</div>
+
+<!-- New Year Modal -->
+<div class="mo" id="nyMo">
+  <div class="mo-box">
+    <div class="mo-hd"><h2 id="nyTitle">新年度作成</h2><button class="mo-cl" onclick="closeMo('nyMo')">&times;</button></div>
+    <div class="mo-bd">
+      <div class="ny-info" id="nyInfo"></div>
+      <p style="font-size:11px;color:var(--g600);margin-bottom:6px;">引き継ぐ商品を選択（マスター設定引き継ぎ、日付は全リセット）：</p>
+      <div style="margin-bottom:6px;"><label style="font-size:11px;cursor:pointer;"><input type="checkbox" id="nyAll" onchange="toggleNyAll()" checked> すべて選択</label></div>
+      <div class="ny-list" id="nyList"></div>
+    </div>
+    <div class="mo-ft">
+      <button class="btn btn-o" onclick="closeMo('nyMo')">キャンセル</button>
+      <button class="btn btn-s" onclick="execNewYear()">作成する</button>
+    </div>
+  </div>
 </div>
 
 <div class="saving" id="savingInd">保存中...</div>
 <div class="toast" id="toast"></div>
 
 <script>
-// ═══════════════════════════════════════
-// Supabase Config
-// ═══════════════════════════════════════
-const SB_URL = 'https://ootpmvitsggulcqvufsd.supabase.co';
-const SB_KEY = 'sb_publishable_3trYXswFYXxq5cQji3G81g_woQLl_Xk';
-const sb = supabase.createClient(SB_URL, SB_KEY);
+const SB_URL='https://ootpmvitsggulcqvufsd.supabase.co';
+const SB_KEY='sb_publishable_3trYXswFYXxq5cQji3G81g_woQLl_Xk';
+const sb=supabase.createClient(SB_URL,SB_KEY);
 
-// ═══════════════════════════════════════
-// Constants
-// ═══════════════════════════════════════
-const TABS = ['overview','dev','sub','prod','ship'];
-const TAB_LABELS = {overview:'一覧',dev:'開発フェーズ',sub:'副資材フェーズ',prod:'量産フェーズ',ship:'ship'};
-const COMPANIES = ['クロダルマ','シンメン','NSP'];
-const CATEGORIES = ['ファン','バッテリー','ケーブル','充電器','その他'];
-const MASTER_DEFS = [
+const TABS=['overview','dev','sub','prod','ship'];
+const TAB_LABELS={overview:'一覧',dev:'開発',sub:'副資材',prod:'量産',ship:'ship'};
+const COMPANIES=['クロダルマ','シンメン','NSP'];
+const CATEGORIES=['ファン','バッテリー','ケーブル','充電器','その他'];
+const MASTER_DEFS=[
   {key:'package',label:'パッケージ',opts:['新規','去年と同様','不要']},
   {key:'blister',label:'ブリスター',opts:['新規','去年と同様','不要']},
   {key:'manual',label:'説明書',opts:['新規','去年と同様','不要']},
@@ -153,7 +206,7 @@ const MASTER_DEFS = [
   {key:'decoration',label:'加飾指示',opts:['新規','部分変更','去年と同様']},
   {key:'pse',label:'PSE',opts:['新規','去年と同様','不要']}
 ];
-const DEV_COLS = [
+const DEV_COLS=[
   {key:'factoryQuote',label:'工場見積り',grp:'A'},{key:'customerQuote',label:'顧客見積り',grp:'A'},
   {key:'salesContract',label:'売買契約書',grp:'A'},{key:'moldInvoice',label:'金型代請求書',grp:'A'},
   {key:'advanceInvoice',label:'前受金請求書',grp:'A'},
@@ -162,333 +215,270 @@ const DEV_COLS = [
   {key:'procInstruction',label:'加工指示',grp:'B-deco'},
   {key:'procConfirm',label:'加工顧客確認',grp:'C-deco',hasMethod:true}
 ];
-const SUB_LABELS = [
+const SUB_LABELS=[
   {key:'internal',label:'初回社内確認'},{key:'customer',label:'お客様確認'},
   {key:'rev1',label:'修正1回目お客様確認'},{key:'rev2',label:'修正2回目お客様確認'},
   {key:'rev3',label:'修正3回目お客様確認'},{key:'final',label:'最終確認完了'}
 ];
-const PROD_COLS = [
-  {key:'colorBox',label:'カラーボックス',rst:null},{key:'blister',label:'ブリスター',rst:'blister'},
-  {key:'manual',label:'取扱説明書',rst:null},{key:'colorBoxMat',label:'カラーBOX材料',rst:null},
+const PROD_COLS=[
+  {key:'colorBox',label:'カラーBOX',rst:null},{key:'blister',label:'ブリスター',rst:'blister'},
+  {key:'manual',label:'取説',rst:null},{key:'colorBoxMat',label:'BOX材料',rst:null},
   {key:'outerBox',label:'外箱マーク',rst:null},{key:'label',label:'ラベル',rst:null},
   {key:'labelMat',label:'ラベル材質',rst:null},{key:'pse',label:'PSE',rst:'battery'},
   {key:'un383',label:'UN38.3',rst:'battery'},{key:'msds',label:'MSDS',rst:'battery'},
-  {key:'nonAppl',label:'非該当証明書',rst:'battery'},{key:'selfInsp',label:'自主検査記録',rst:'battery'}
+  {key:'nonAppl',label:'非該当証明書',rst:'battery'},{key:'selfInsp',label:'自主検査',rst:'battery'}
 ];
-const SHIP_COLS = [
-  {key:'shipDoc',label:'船積み書類依頼'},{key:'bl',label:'B/L受領'},{key:'invoice',label:'インボイス受領'},
-  {key:'packing',label:'パッキングリスト受領'},{key:'shipNotice',label:'船積み通知送付'},{key:'eta',label:'ETA確認'},
-  {key:'customsDoc',label:'通関書類送付'},{key:'customsDone',label:'通関完了'},
+const SHIP_COLS=[
+  {key:'shipDoc',label:'船積書類'},{key:'bl',label:'B/L'},{key:'invoice',label:'インボイス'},
+  {key:'packing',label:'パッキングリスト'},{key:'shipNotice',label:'船積通知'},{key:'eta',label:'ETA'},
+  {key:'customsDoc',label:'通関書類'},{key:'customsDone',label:'通関完了'},
   {key:'warehouse',label:'倉庫入荷'},{key:'inspect',label:'入荷検品'},{key:'delivered',label:'納品完了'}
 ];
-const BAND_COLORS = ['band-0','band-1','band-2','band-3'];
+const BAND=['band-0','band-1','band-2','band-3'];
 
-// ═══════════════════════════════════════
-// State
-// ═══════════════════════════════════════
-let DATA = [], YEARS = [], CUR_YEAR = 2026, activeTab = 'overview', currentUser = null;
-let saveTimer = null;
+let DATA=[],YEARS=[],CUR_YEAR=2026,activeTab='overview',currentUser=null,saveTimer=null,modalMaster={};
 
-// ═══════════════════════════════════════
-// Auth
-// ═══════════════════════════════════════
-async function checkAuth(){
-  const {data:{session}} = await sb.auth.getSession();
-  if(session){currentUser=session.user;showApp();}
-}
+// ── Auth ──
+async function checkAuth(){const{data:{session}}=await sb.auth.getSession();if(session){currentUser=session.user;showApp();}}
 async function doLogin(){
-  const email=document.getElementById('loginEmail').value.trim();
-  const pass=document.getElementById('loginPass').value;
-  if(!email||!pass){showLoginErr('メールとパスワードを入力してください');return;}
-  const{error}=await sb.auth.signInWithPassword({email,password:pass});
+  const e=document.getElementById('loginEmail').value.trim(),p=document.getElementById('loginPass').value;
+  if(!e||!p){showLoginErr('入力してください');return;}
+  const{error}=await sb.auth.signInWithPassword({email:e,password:p});
   if(error){showLoginErr(error.message);return;}
-  const{data:{session}}=await sb.auth.getSession();
-  currentUser=session.user;showApp();
+  const{data:{session}}=await sb.auth.getSession();currentUser=session.user;showApp();
 }
-async function doSignup(){
-  const email=document.getElementById('loginEmail').value.trim();
-  const pass=document.getElementById('loginPass').value;
-  if(!email||!pass){showLoginErr('メールとパスワードを入力してください');return;}
-  if(pass.length<6){showLoginErr('パスワードは6文字以上');return;}
-  const{error}=await sb.auth.signUp({email,password:pass});
-  if(error){showLoginErr(error.message);return;}
-  showLoginErr('確認メールを送信しました。メール内のリンクをクリックしてからログインしてください。');
-  document.getElementById('loginErr').style.color='var(--ok)';
-}
-async function doLogout(){
-  await sb.auth.signOut();
-  currentUser=null;
-  document.getElementById('appScreen').style.display='none';
-  document.getElementById('loginScreen').style.display='flex';
-}
-function showLoginErr(msg){const e=document.getElementById('loginErr');e.textContent=msg;e.style.display='block';e.style.color='var(--err)';}
-function showApp(){
-  document.getElementById('loginScreen').style.display='none';
-  document.getElementById('appScreen').style.display='block';
-  document.getElementById('userInfo').textContent=currentUser.email;
-  loadData();
-}
+async function doLogout(){await sb.auth.signOut();currentUser=null;document.getElementById('appScreen').style.display='none';document.getElementById('loginScreen').style.display='flex';}
+function showLoginErr(m){const e=document.getElementById('loginErr');e.textContent=m;e.style.display='block';}
+function showApp(){document.getElementById('loginScreen').style.display='none';document.getElementById('appScreen').style.display='block';document.getElementById('userInfo').textContent=currentUser.email;loadData();}
 
-// ═══════════════════════════════════════
-// Data
-// ═══════════════════════════════════════
+// ── Data ──
 async function loadData(){
-  const{data:years}=await sb.from('years').select('year').order('year');
-  YEARS=(years||[]).map(y=>y.year);
-  if(!YEARS.length){YEARS=[2026];}
-  CUR_YEAR=YEARS[YEARS.length-1];
-  await loadYear(CUR_YEAR);
+  const{data:y}=await sb.from('years').select('year').order('year');
+  YEARS=(y||[]).map(r=>r.year);if(!YEARS.length)YEARS=[2026];
+  CUR_YEAR=YEARS[YEARS.length-1];await loadYear(CUR_YEAR);
 }
-async function loadYear(yr){
-  CUR_YEAR=yr;
-  const{data}=await sb.from('products').select('*').eq('year',yr).order('sort_order');
-  DATA=data||[];
-  render();
-}
+async function loadYear(yr){CUR_YEAR=yr;const{data}=await sb.from('products').select('*').eq('year',yr).order('sort_order');DATA=data||[];render();}
 async function saveProduct(p){
   document.getElementById('savingInd').classList.add('show');
-  p.updated_by=currentUser.email;
-  p.updated_at=new Date().toISOString();
-  const{error}=await sb.from('products').upsert(p);
-  if(error)toast('保存エラー: '+error.message);
+  p.updated_by=currentUser.email;p.updated_at=new Date().toISOString();
+  await sb.from('products').upsert(p);
   document.getElementById('savingInd').classList.remove('show');
 }
-function debounceSave(p){
-  if(saveTimer)clearTimeout(saveTimer);
-  saveTimer=setTimeout(()=>saveProduct(p),300);
-}
+function debounceSave(p){if(saveTimer)clearTimeout(saveTimer);saveTimer=setTimeout(()=>saveProduct(p),300);}
 
-// ═══════════════════════════════════════
-// Restriction Logic
-// ═══════════════════════════════════════
-function isDevDis(p,c){
-  const m=p.master||{};
+// ── Restriction ──
+function isDevDis(p,c){const m=p.master||{};
   if(c.grp==='B-moldname')return m.mold!=='去年と同様';
   if(c.grp==='B-mold'&&m.mold==='去年と同様')return true;
-  if((c.grp==='B-deco'||c.grp==='C-deco')&&m.decoration==='去年と同様')return true;
-  return false;
-}
-function isSubDis(p,type){const m=p.master||{};const v=type==='package'?m.package:m.manual;return v==='去年と同様'||v==='不要';}
-function isProdDis(p,c){
-  const m=p.master||{};
+  if((c.grp==='B-deco'||c.grp==='C-deco')&&m.decoration==='去年と同様')return true;return false;}
+function isSubDis(p,ty){const m=p.master||{};const v=ty==='package'?m.package:m.manual;return v==='去年と同様'||v==='不要';}
+function isProdDis(p,c){const m=p.master||{};
   if(c.rst==='blister')return m.blister==='去年と同様'||m.blister==='不要';
-  if(c.rst==='battery')return p.category!=='バッテリー';
-  return false;
-}
+  if(c.rst==='battery')return p.category!=='バッテリー';return false;}
 
-// ═══════════════════════════════════════
-// Render
-// ═══════════════════════════════════════
+// ── Progress ──
+function calcProg(p,phase){
+  let t=0,d=0;
+  if(phase==='dev'){DEV_COLS.forEach(c=>{if(c.isText)return;if(!isDevDis(p,c)){t++;const v=(p.dev||{})[c.key];if(v&&v.date)d++;}});}
+  else if(phase==='sub'){['package','manual'].forEach(ty=>{if(!isSubDis(p,ty))SUB_LABELS.forEach(s=>{t++;const v=((p.sub||{})[ty]||{})[s.key];if(v&&v.date)d++;});});}
+  else if(phase==='prod'){PROD_COLS.forEach(c=>{if(!isProdDis(p,c)){t++;const v=(p.prod||{})[c.key];if(v&&v.date)d++;}});}
+  else if(phase==='ship'){SHIP_COLS.forEach(c=>{t++;const v=(p.ship||{})[c.key];if(v&&v.date)d++;});}
+  return t?Math.round(d/t*100):100;
+}
+function progH(v){const c=v<33?'pf-lo':v<66?'pf-mi':'pf-hi';return`<div class="prog"><div class="prog-bar"><div class="prog-fill ${c}" style="width:${v}%"></div></div><span style="font-size:9px;font-weight:700;min-width:24px;text-align:right;">${v}%</span></div>`;}
+
+// ── Render ──
 function render(){
-  // Year tabs
   document.getElementById('yearSel').innerHTML=
-    YEARS.map(y=>`<button class="yr-btn${CUR_YEAR===y?' active':''}" onclick="loadYear(${y})">${y}年度</button>`).join('');
-  // Sheet tabs
+    YEARS.map(y=>{const canDel=YEARS.length>1;return`<button class="yr-btn${CUR_YEAR===y?' active':''}" onclick="loadYear(${y})">${y}年度${canDel?`<span class="yr-del" onclick="event.stopPropagation();deleteYear(${y})">×</span>`:''}</button>`;}).join('')+
+    `<button class="yr-new" onclick="openNewYear()">＋</button>`;
   document.getElementById('sheetTabs').innerHTML=TABS.map(t=>
     `<div class="sh-tab${activeTab===t?' active':''}" onclick="activeTab='${t}';render();">${TAB_LABELS[t]}</div>`
   ).join('');
   const ct=document.getElementById('content');
+  if(!DATA.length){ct.innerHTML='<div class="empty"><p>データがありません</p><button class="btn btn-p" onclick="openAdd()">＋ 新規登録</button></div>';return;}
   if(activeTab==='overview')ct.innerHTML=renderOverview();
-  else if(activeTab==='dev')ct.innerHTML=renderPhase('dev');
-  else if(activeTab==='sub')ct.innerHTML=renderPhase('sub');
-  else if(activeTab==='prod')ct.innerHTML=renderPhase('prod');
-  else if(activeTab==='ship')ct.innerHTML=renderPhase('ship');
+  else ct.innerHTML=renderPhase(activeTab);
 }
-
-// Group index for band colors
-function getGroupIdx(idx){
-  let g=-1;
-  for(let i=0;i<=idx;i++){if(DATA[i].is_parent)g++;}
-  return g;
-}
-
 function esc(s){const d=document.createElement('div');d.textContent=s;return d.innerHTML;}
-
-function masterBadge(val){
-  if(!val)return'<span style="color:var(--g400);">—</span>';
-  if(val==='新規')return`<span class="ms-new">${val}</span>`;
-  if(val==='不要')return`<span class="ms-no">${val}</span>`;
-  if(val==='去年と同様')return`<span class="ms-same">${val}</span>`;
-  if(val==='部分変更')return`<span class="ms-part">${val}</span>`;
-  return val;
-}
-
-function masterSelector(pid,key,cur,opts){
-  return`<div class="ms-sel">${opts.map(o=>{
-    let cls='';if(cur===o){cls=o==='新規'?'act-new':o==='部分変更'?'act-part':o==='去年と同様'?'act-same':'act-no';}
-    return`<button class="${cls}" onclick="setMaster('${pid}','${key}','${o}')">${o}</button>`;
-  }).join('')}</div>`;
-}
+function grpIdx(i){let g=-1;for(let j=0;j<=i;j++)if(DATA[j].is_parent)g++;return g;}
 
 // ── Overview ──
 function renderOverview(){
-  if(!DATA.length)return'<div class="loading">データがありません</div>';
-  let h=`<div class="ss-wrap"><table class="ss"><thead><tr>
-    <th class="rn">品番</th><th>会社名</th><th>カテゴリ</th>`;
+  let h=`<div class="ss-wrap"><table class="ss"><thead><tr><th class="rn">品番</th><th>会社</th><th>カテゴリ</th>`;
   MASTER_DEFS.forEach(m=>{h+=`<th>${m.label}</th>`;});
-  h+=`<th>更新者</th></tr></thead><tbody>`;
+  h+=`<th>開発</th><th>副資材</th><th>量産</th><th>ship</th><th>更新者</th><th></th></tr></thead><tbody>`;
   DATA.forEach((p,i)=>{
-    const g=getGroupIdx(i);
-    const band=p.is_parent?BAND_COLORS[g%4]:'';
-    const rowCls=p.is_parent?'parent-row':'child-row';
+    const g=grpIdx(i),band=p.is_parent?BAND[g%4]:'',rc=p.is_parent?'parent-row':'child-row';
     const m=p.master||{};
-    h+=`<tr class="${rowCls}"><td class="rn ${band}">${esc(p.code)}</td>
-      <td>${esc(p.company)}</td>
-      <td>${esc(p.category||'')}</td>`;
+    h+=`<tr class="${rc}"><td class="rn ${band}">${esc(p.code)}</td>
+      <td>${esc(p.company)}</td><td>${esc(p.category||'')}</td>`;
     MASTER_DEFS.forEach(md=>{
-      h+=`<td>${masterSelector(p.id,md.key,m[md.key]||'',md.opts)}</td>`;
+      const v=m[md.key]||'';
+      h+=`<td>${masterSel(p.id,md.key,v,md.opts)}</td>`;
     });
-    h+=`<td style="font-size:10px;color:var(--g400);">${p.updated_by?esc(p.updated_by.split('@')[0]):''}</td></tr>`;
+    h+=`<td>${progH(calcProg(p,'dev'))}</td><td>${progH(calcProg(p,'sub'))}</td><td>${progH(calcProg(p,'prod'))}</td><td>${progH(calcProg(p,'ship'))}</td>`;
+    h+=`<td style="font-size:9px;color:var(--g400);">${p.updated_by?esc(p.updated_by.split('@')[0]):''}</td>`;
+    h+=`<td><button class="btn btn-d btn-sm" onclick="delProduct('${p.id}')">削除</button></td></tr>`;
   });
-  h+=`</tbody></table></div>`;
-  return h;
+  h+=`</tbody></table></div>`;return h;
+}
+function masterSel(pid,key,cur,opts){
+  return`<div class="ms-sel">${opts.map(o=>{
+    let c='';if(cur===o){c=o==='新規'?'act-new':o==='部分変更'?'act-part':o==='去年と同様'?'act-same':'act-no';}
+    return`<button class="${c}" onclick="setMaster('${pid}','${key}','${o}')">${o}</button>`;
+  }).join('')}</div>`;
 }
 
-// ── Phase sheets ──
+// ── Phase ──
 function renderPhase(phase){
-  if(!DATA.length)return'<div class="loading">データがありません</div>';
-  let cols,grpHeader;
-  if(phase==='dev'){
-    cols=DEV_COLS;
-    grpHeader=[{s:1,e:5,l:'見積り・契約・請求',c:'cg-dev'},{s:6,e:8,l:'金型',c:'cg-dev'},{s:9,e:9,l:'加工指示',c:'cg-dev'},{s:10,e:11,l:'顧客確認',c:'cg-dev'}];
-  }else if(phase==='sub'){
+  let cols,grps;
+  if(phase==='dev'){cols=DEV_COLS;grps=[{s:1,e:5,l:'見積り・契約・請求',c:'cg-dev'},{s:6,e:8,l:'金型',c:'cg-dev'},{s:9,e:9,l:'加工指示',c:'cg-dev'},{s:10,e:11,l:'顧客確認',c:'cg-dev'}];}
+  else if(phase==='sub'){
     cols=[...SUB_LABELS.map(s=>({...s,subType:'package'})),...SUB_LABELS.map(s=>({key:s.key+'_m',label:s.label,subType:'manual'}))];
-    grpHeader=[{s:1,e:6,l:'パッケージ確認フロー',c:'cg-sub'},{s:7,e:12,l:'説明書確認フロー',c:'cg-sub'}];
-  }else if(phase==='prod'){
-    cols=PROD_COLS;
-    grpHeader=[{s:1,e:7,l:'資材データ',c:'cg-prod'},{s:8,e:12,l:'認証・検査',c:'cg-prod'}];
-  }else{
-    cols=SHIP_COLS;
-    grpHeader=[{s:1,e:6,l:'出荷',c:'cg-ship'},{s:7,e:11,l:'通関・納品',c:'cg-ship'}];
-  }
+    grps=[{s:1,e:6,l:'パッケージ確認フロー',c:'cg-sub'},{s:7,e:12,l:'説明書確認フロー',c:'cg-sub'}];
+  }else if(phase==='prod'){cols=PROD_COLS;grps=[{s:1,e:7,l:'資材データ',c:'cg-prod'},{s:8,e:12,l:'認証・検査',c:'cg-prod'}];}
+  else{cols=SHIP_COLS;grps=[{s:1,e:6,l:'出荷',c:'cg-ship'},{s:7,e:11,l:'通関・納品',c:'cg-ship'}];}
 
   let h=`<div class="ss-wrap"><table class="ss"><thead><tr><th class="rn" rowspan="2">品番</th>`;
-  grpHeader.forEach(g=>{h+=`<th class="${g.c}" colspan="${g.e-g.s+1}">${g.l}</th>`;});
-  if(phase==='dev')h+=`<th class="cg-dev">連絡手段</th>`;
-  h+=`</tr><tr>`;
-  cols.forEach(c=>{h+=`<th>${c.label}</th>`;});
+  grps.forEach(g=>{h+=`<th class="${g.c}" colspan="${g.e-g.s+1}">${g.l}</th>`;});
+  if(phase==='dev')h+=`<th class="cg-dev">手段</th>`;
+  h+=`</tr><tr>`;cols.forEach(c=>{h+=`<th>${c.label}</th>`;});
   if(phase==='dev')h+=`<th>手段</th>`;
   h+=`</tr></thead><tbody>`;
 
   DATA.forEach((p,i)=>{
-    const g=getGroupIdx(i);
-    const band=p.is_parent?BAND_COLORS[g%4]:'';
-    const rowCls=p.is_parent?'parent-row':'child-row';
-    h+=`<tr class="${rowCls}"><td class="rn ${band}">${esc(p.code)}</td>`;
-
+    const g=grpIdx(i),band=p.is_parent?BAND[g%4]:'',rc=p.is_parent?'parent-row':'child-row';
+    h+=`<tr class="${rc}"><td class="rn ${band}">${esc(p.code)}</td>`;
     if(phase==='dev'){
-      const dev=p.dev||{};
-      cols.forEach(c=>{
-        if(!dev[c.key])dev[c.key]={};
-        const dis=isDevDis(p,c);
-        const v=dev[c.key];
-        if(c.isText){
-          h+=`<td class="${dis?'cell-disabled':v.text?'cell-done':'cell-empty'}"><input type="text" value="${esc(v.text||'')}" placeholder="" onchange="updDev('${p.id}','${c.key}','text',this.value)"></td>`;
-        }else{
-          h+=cellDate(dis,v.date||'',`updDev('${p.id}','${c.key}','date',this.value)`);
-        }
+      const dv=p.dev||{};
+      cols.forEach(c=>{if(!dv[c.key])dv[c.key]={};const dis=isDevDis(p,c),v=dv[c.key];
+        if(c.isText)h+=`<td class="${dis?'cell-disabled':v.text?'cell-done':'cell-empty'}"><input type="text" value="${esc(v.text||'')}" onchange="updDev('${p.id}','${c.key}','text',this.value)"></td>`;
+        else h+=cellD(dis,v.date||'',`updDev('${p.id}','${c.key}','date',this.value)`);
       });
-      // 連絡手段
-      const pc=dev.procConfirm||{};
-      const disPc=isDevDis(p,{grp:'C-deco'});
-      h+=`<td class="${disPc?'cell-disabled':pc.method?'cell-done':'cell-empty'}"><select onchange="updDev('${p.id}','procConfirm','method',this.value)"><option value="">--</option>${['電話','WeChat','メール'].map(m=>`<option${pc.method===m?' selected':''}>${m}</option>`).join('')}</select></td>`;
+      const pc=dv.procConfirm||{},dpc=isDevDis(p,{grp:'C-deco'});
+      h+=`<td class="${dpc?'cell-disabled':pc.method?'cell-done':'cell-empty'}"><select onchange="updDev('${p.id}','procConfirm','method',this.value)"><option value="">--</option>${['電話','WeChat','メール'].map(m=>`<option${pc.method===m?' selected':''}>${m}</option>`).join('')}</select></td>`;
     }else if(phase==='sub'){
-      cols.forEach(c=>{
-        const sub=p.sub||{};const ty=c.subType;
-        if(!sub[ty])sub[ty]={};
-        const realKey=c.key.replace('_m','');
-        if(!sub[ty][realKey])sub[ty][realKey]={};
-        const dis=isSubDis(p,ty);
-        const v=sub[ty][realKey].date||'';
-        h+=cellDate(dis,v,`updSub('${p.id}','${ty}','${realKey}',this.value)`);
-      });
+      cols.forEach(c=>{const sub=p.sub||{};const ty=c.subType;if(!sub[ty])sub[ty]={};const rk=c.key.replace('_m','');if(!sub[ty][rk])sub[ty][rk]={};
+        h+=cellD(isSubDis(p,ty),sub[ty][rk].date||'',`updSub('${p.id}','${ty}','${rk}',this.value)`);});
     }else if(phase==='prod'){
-      const prod=p.prod||{};
-      cols.forEach(c=>{
-        if(!prod[c.key])prod[c.key]={};
-        const dis=isProdDis(p,c);
-        h+=cellDate(dis,prod[c.key].date||'',`updProd('${p.id}','${c.key}',this.value)`);
-      });
+      const pr=p.prod||{};cols.forEach(c=>{if(!pr[c.key])pr[c.key]={};h+=cellD(isProdDis(p,c),pr[c.key].date||'',`updProd('${p.id}','${c.key}',this.value)`);});
     }else{
-      const ship=p.ship||{};
-      cols.forEach(c=>{
-        if(!ship[c.key])ship[c.key]={};
-        h+=cellDate(false,ship[c.key].date||'',`updShip('${p.id}','${c.key}',this.value)`);
-      });
+      const sh=p.ship||{};cols.forEach(c=>{if(!sh[c.key])sh[c.key]={};h+=cellD(false,sh[c.key].date||'',`updShip('${p.id}','${c.key}',this.value)`);});
     }
     h+=`</tr>`;
   });
-  h+=`</tbody></table></div>`;
-  return h;
+  h+=`</tbody></table></div>`;return h;
 }
-
-function cellDate(dis,val,onch){
+function cellD(dis,val,onch){
   if(dis)return`<td class="cell-disabled"><input type="date"></td>`;
-  const cls=val?'cell-done':'cell-empty';
-  return`<td class="${cls}"><input type="date" value="${val}" onchange="${onch}"></td>`;
+  return`<td class="${val?'cell-done':'cell-empty'}"><input type="date" value="${val}" onchange="${onch}"></td>`;
 }
 
-// ═══════════════════════════════════════
-// Update handlers
-// ═══════════════════════════════════════
-async function setMaster(id,key,val){
-  const p=DATA.find(x=>x.id===id);if(!p)return;
-  if(!p.master)p.master={};
-  const old=p.master[key];
-  p.master[key]=val;
-  // Auto-set PSE to 不要 for non-battery
-  if(key==='category'||p.category!=='バッテリー'){/* handled in render */}
-  await saveProduct(p);
-  // Log edit
-  if(old!==val)logEdit(id,`master.${key}`,old||'',val);
-  render();
+// ── Updates ──
+async function setMaster(id,key,val){const p=DATA.find(x=>x.id===id);if(!p)return;if(!p.master)p.master={};const old=p.master[key];p.master[key]=val;await saveProduct(p);if(old!==val)logEdit(id,`master.${key}`,old||'',val);render();}
+async function updDev(id,k,f,v){const p=DATA.find(x=>x.id===id);if(!p)return;if(!p.dev)p.dev={};if(!p.dev[k])p.dev[k]={};p.dev[k][f]=v;debounceSave(p);render();}
+async function updSub(id,ty,k,v){const p=DATA.find(x=>x.id===id);if(!p)return;if(!p.sub)p.sub={};if(!p.sub[ty])p.sub[ty]={};if(!p.sub[ty][k])p.sub[ty][k]={};p.sub[ty][k].date=v;debounceSave(p);render();}
+async function updProd(id,k,v){const p=DATA.find(x=>x.id===id);if(!p)return;if(!p.prod)p.prod={};if(!p.prod[k])p.prod[k]={};p.prod[k].date=v;debounceSave(p);render();}
+async function updShip(id,k,v){const p=DATA.find(x=>x.id===id);if(!p)return;if(!p.ship)p.ship={};if(!p.ship[k])p.ship[k]={};p.ship[k].date=v;debounceSave(p);render();}
+async function logEdit(pid,field,ov,nv){await sb.from('edit_logs').insert({product_id:pid,field,old_value:ov,new_value:nv,edited_by:currentUser.email});}
+
+// ── Add Product ──
+function initMM(){modalMaster={};MASTER_DEFS.forEach(m=>{modalMaster[m.key]=m.opts[0];});}
+function renderMM(){
+  const cat=document.getElementById('aCat').value;
+  if(cat&&cat!=='バッテリー')modalMaster.pse='不要';
+  document.getElementById('masterFields').innerHTML=MASTER_DEFS.map(m=>{
+    const cur=modalMaster[m.key],locked=m.key==='pse'&&cat&&cat!=='バッテリー';
+    return`<div class="ms-row"><span class="ms-name">${m.label}</span><div class="ms-sel">${
+      m.opts.map(o=>{let c='';if(cur===o){c=o==='新規'?'act-new':o==='部分変更'?'act-part':o==='去年と同様'?'act-same':'act-no';}
+        return`<button class="${c}" style="${locked&&o!==cur?'opacity:.3;pointer-events:none;':''}" onclick="setMM('${m.key}','${o}')">${o}</button>`;
+      }).join('')}</div>${locked?'<span style="font-size:9px;color:var(--g400);">自動</span>':''}</div>`;
+  }).join('');
 }
-async function updDev(id,key,field,val){
-  const p=DATA.find(x=>x.id===id);if(!p)return;
-  if(!p.dev)p.dev={};if(!p.dev[key])p.dev[key]={};
-  const old=p.dev[key][field];
-  p.dev[key][field]=val;
-  debounceSave(p);render();
-  if(old!==val)logEdit(id,`dev.${key}.${field}`,old||'',val);
+function setMM(k,v){modalMaster[k]=v;renderMM();}
+function onCatChange(){const c=document.getElementById('aCat').value;if(c&&c!=='バッテリー')modalMaster.pse='不要';renderMM();}
+
+function openAdd(){
+  document.getElementById('addTitle').textContent='新規商品登録';
+  document.getElementById('saveBtn').textContent='登録';
+  document.getElementById('editId').value='';
+  document.getElementById('aCompany').innerHTML=`<option value="">--</option>`+COMPANIES.map(c=>`<option>${c}</option>`).join('');
+  document.getElementById('aCode').value='';
+  document.getElementById('aCat').value='';
+  document.getElementById('aParent').value='true';
+  initMM();renderMM();openMo('addMo');
 }
-async function updSub(id,type,key,val){
-  const p=DATA.find(x=>x.id===id);if(!p)return;
-  if(!p.sub)p.sub={};if(!p.sub[type])p.sub[type]={};if(!p.sub[type][key])p.sub[type][key]={};
-  const old=p.sub[type][key].date;
-  p.sub[type][key].date=val;
-  debounceSave(p);render();
-  if(old!==val)logEdit(id,`sub.${type}.${key}`,old||'',val);
-}
-async function updProd(id,key,val){
-  const p=DATA.find(x=>x.id===id);if(!p)return;
-  if(!p.prod)p.prod={};if(!p.prod[key])p.prod[key]={};
-  const old=p.prod[key].date;
-  p.prod[key].date=val;
-  debounceSave(p);render();
-  if(old!==val)logEdit(id,`prod.${key}`,old||'',val);
-}
-async function updShip(id,key,val){
-  const p=DATA.find(x=>x.id===id);if(!p)return;
-  if(!p.ship)p.ship={};if(!p.ship[key])p.ship[key]={};
-  const old=p.ship[key].date;
-  p.ship[key].date=val;
-  debounceSave(p);render();
-  if(old!==val)logEdit(id,`ship.${key}`,old||'',val);
-}
-async function logEdit(pid,field,oldVal,newVal){
-  await sb.from('edit_logs').insert({product_id:pid,field,old_value:oldVal,new_value:newVal,edited_by:currentUser.email});
+async function saveNewProduct(){
+  const company=document.getElementById('aCompany').value;
+  const code=document.getElementById('aCode').value.trim();
+  if(!company||!code){toast('会社名と品番を入力');return;}
+  const cat=document.getElementById('aCat').value;
+  const isParent=document.getElementById('aParent').value==='true';
+  const maxSort=DATA.length?Math.max(...DATA.map(p=>p.sort_order||0))+1:0;
+  const id='p_'+Date.now().toString(36)+Math.random().toString(36).substr(2,4);
+  const p={id,year:CUR_YEAR,company,code,is_parent:isParent,sort_order:maxSort,category:cat||'',
+    master:{...modalMaster},dev:{},sub:{package:{},manual:{}},prod:{},ship:{},
+    updated_by:currentUser.email,updated_at:new Date().toISOString(),created_at:new Date().toISOString()};
+  await sb.from('products').insert(p);
+  DATA.push(p);closeMo('addMo');render();toast('登録しました');
 }
 
-// ═══════════════════════════════════════
-// Utilities
-// ═══════════════════════════════════════
-function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);}
+// ── Delete Product ──
+async function delProduct(id){
+  const p=DATA.find(x=>x.id===id);if(!p)return;
+  if(!confirm(`「${p.code}」を削除しますか？`))return;
+  await sb.from('products').delete().eq('id',id);
+  DATA=DATA.filter(x=>x.id!==id);render();toast('削除しました');
+}
 
-// Enter key on login
+// ── Year Management ──
+async function deleteYear(yr){
+  if(YEARS.length<=1){toast('最後の年度は削除できません');return;}
+  if(!confirm(`${yr}年度を完全に削除しますか？`))return;
+  await sb.from('products').delete().eq('year',yr);
+  await sb.from('years').delete().eq('year',yr);
+  YEARS=YEARS.filter(y=>y!==yr);
+  if(CUR_YEAR===yr){CUR_YEAR=YEARS[YEARS.length-1];await loadYear(CUR_YEAR);}
+  render();toast(`${yr}年度を削除`);
+}
+function openNewYear(){
+  const next=YEARS[YEARS.length-1]+1;
+  if(YEARS.includes(next)){toast(`${next}年度は既に存在`);return;}
+  document.getElementById('nyTitle').textContent=`${next}年度を作成`;
+  document.getElementById('nyInfo').innerHTML=`<strong>${CUR_YEAR}年度</strong> → <strong>${next}年度</strong><br>✅ マスター設定引き継ぎ 🔄 日付は全リセット`;
+  const list=document.getElementById('nyList');
+  list.innerHTML=DATA.map(p=>`<div class="ny-item"><input type="checkbox" checked data-pid="${p.id}"><span style="font-weight:600;">${esc(p.code)}</span><span style="color:var(--g400);font-size:10px;">${esc(p.company)}</span></div>`).join('');
+  document.getElementById('nyAll').checked=true;
+  openMo('nyMo');
+}
+function toggleNyAll(){const c=document.getElementById('nyAll').checked;document.querySelectorAll('#nyList input[type=checkbox]').forEach(cb=>{cb.checked=c;});}
+async function execNewYear(){
+  const next=YEARS[YEARS.length-1]+1;
+  const sel=new Set();document.querySelectorAll('#nyList input[type=checkbox]:checked').forEach(cb=>{sel.add(cb.dataset.pid);});
+  // Create year
+  await sb.from('years').insert({year:next});
+  // Copy products
+  const newProds=DATA.filter(p=>sel.has(p.id)).map((p,i)=>{
+    const np=JSON.parse(JSON.stringify(p));
+    np.id='p_'+Date.now().toString(36)+Math.random().toString(36).substr(2,4)+(i);
+    np.year=next;np.dev={};np.sub={package:{},manual:{}};np.prod={};np.ship={};
+    np.updated_by=currentUser.email;np.updated_at=new Date().toISOString();np.created_at=new Date().toISOString();
+    return np;
+  });
+  if(newProds.length)await sb.from('products').insert(newProds);
+  YEARS.push(next);CUR_YEAR=next;DATA=newProds;
+  closeMo('nyMo');render();toast(`${next}年度を作成（${newProds.length}件引き継ぎ）`);
+}
+
+// ── Utils ──
+function openMo(id){document.getElementById(id).classList.add('active');}
+function closeMo(id){document.getElementById(id).classList.remove('active');}
+function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);}
+document.querySelectorAll('.mo').forEach(el=>{el.addEventListener('click',e=>{if(e.target===el)closeMo(el.id);});});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')document.querySelectorAll('.mo.active').forEach(el=>closeMo(el.id));});
 document.getElementById('loginPass').addEventListener('keydown',e=>{if(e.key==='Enter')doLogin();});
-document.getElementById('loginEmail').addEventListener('keydown',e=>{if(e.key==='Enter')document.getElementById('loginPass').focus();});
 
-// Init
 checkAuth();
 </script>
 </body>
