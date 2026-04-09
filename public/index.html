@@ -50,17 +50,21 @@ body{font-family:"Segoe UI","Hiragino Sans","Meiryo",sans-serif;background:var(-
 .wrap{padding:10px 16px;}
 
 /* Spreadsheet */
-.ss-wrap{overflow-x:auto;background:#fff;border-radius:var(--r);box-shadow:0 1px 3px rgba(0,0,0,.08);border:1px solid var(--g200);}
+.ss-wrap{overflow:auto;max-height:calc(100vh - 90px);background:#fff;border-radius:var(--r);box-shadow:0 1px 3px rgba(0,0,0,.08);border:1px solid var(--g200);}
 .ss{border-collapse:collapse;font-size:11px;width:max-content;min-width:100%;}
-.ss th{background:var(--g100);padding:3px 6px;text-align:center;font-weight:600;color:var(--g600);border:1px solid var(--g200);white-space:nowrap;position:sticky;top:0;z-index:2;font-size:10px;}
+.ss th{background:var(--g100);padding:3px 6px;text-align:center;font-weight:600;color:var(--g600);border:1px solid var(--g200);white-space:nowrap;position:sticky;z-index:3;font-size:10px;}
+.ss thead tr:first-child th{top:0;} .ss thead tr:nth-child(2) th{top:22px;}
 .ss th.cg-dev{background:var(--pri-l);color:var(--pri-d);} .ss th.cg-sub{background:#fef3c7;color:#92400e;}
 .ss th.cg-prod{background:var(--ok-l);color:#166534;} .ss th.cg-ship{background:#fde68a;color:#78350f;}
 .ss td{padding:2px 4px;border:1px solid var(--g200);text-align:center;vertical-align:middle;min-width:78px;}
-.ss .rn{position:sticky;left:0;z-index:1;background:#fff;text-align:left;font-weight:600;min-width:70px;max-width:95px;padding:2px 4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.ss .rn{position:sticky;left:0;z-index:2;background:#fff;text-align:left;font-weight:600;min-width:70px;max-width:95px;padding:2px 4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.ss thead th:first-child{position:sticky;left:0;z-index:5;}
 .ss tr:hover td{background:var(--g50);} .ss tr:hover .rn{background:var(--pri-l);}
 .ss tr.parent-row .rn{font-weight:700;font-size:11px;} .ss tr.child-row .rn{color:var(--g500);padding-left:14px;font-size:10px;}
 .rn-link{cursor:pointer;color:var(--pri);text-decoration:none;} .rn-link:hover{text-decoration:underline;}
 .ss tr.empty-row td{height:4px;background:var(--g100);padding:0;}
+.ss tr.company-row td{background:var(--g700);color:#fff;font-weight:700;font-size:11px;padding:4px 8px;border-color:var(--g700);}
+.ss tr.company-row .rn{background:var(--g700);color:#fff;}
 .band-0{background:#D6E4F0 !important;} .band-1{background:#E2EFDA !important;} .band-2{background:#FCE4D6 !important;} .band-3{background:#E2D9F3 !important;}
 
 /* Cell */
@@ -308,8 +312,16 @@ function grpIdx(i){let g=-1;for(let j=0;j<=i;j++)if(DATA[j].is_parent)g++;return
 function renderOverview(){
   let h=`<div class="ss-wrap"><table class="ss"><thead><tr><th class="rn">品番</th><th>カテゴリ</th>`;
   MASTER_DEFS.forEach(md=>{h+=`<th>${md.label}</th>`;});
+  const ovCols=2+MASTER_DEFS.length+3+1; // 品番,カテゴリ,マスター6,進捗3,操作
   h+=`<th style="min-width:60px;">開発</th><th style="min-width:60px;">副資材</th><th style="min-width:60px;">量産</th><th></th></tr></thead><tbody>`;
+  let prevCompany='';
   DATA.forEach((p,i)=>{
+    // 会社が変わったら区切り行を挿入
+    if(p.company!==prevCompany){
+      if(prevCompany)h+=`<tr class="empty-row"><td colspan="${ovCols}"></td></tr>`;
+      h+=`<tr class="company-row"><td class="rn" colspan="${ovCols}">${esc(p.company)}</td></tr>`;
+      prevCompany=p.company;
+    }
     const g=grpIdx(i),band=p.is_parent?BAND[g%4]:'',rc=p.is_parent?'parent-row':'child-row';
     const m=p.master||{};
     h+=`<tr class="${rc}"><td class="rn ${band}"><span class="rn-link" onclick="openEdit('${p.id}')">${esc(p.code)}</span></td>
@@ -342,8 +354,14 @@ function renderPhase(phase){
   grps.forEach(g=>{h+=`<th class="${g.c}" colspan="${g.e-g.s+1}">${g.l}</th>`;});
   h+=`</tr><tr>`;cols.forEach(c=>{h+=`<th>${c.label}</th>`;});
   h+=`</tr></thead><tbody>`;
-
+  const phaseCols=1+cols.length;
+  let prevCo='';
   DATA.forEach((p,i)=>{
+    if(p.company!==prevCo){
+      if(prevCo)h+=`<tr class="empty-row"><td colspan="${phaseCols}"></td></tr>`;
+      h+=`<tr class="company-row"><td class="rn" colspan="${phaseCols}">${esc(p.company)}</td></tr>`;
+      prevCo=p.company;
+    }
     const g=grpIdx(i),band=p.is_parent?BAND[g%4]:'',rc=p.is_parent?'parent-row':'child-row';
     h+=`<tr class="${rc}"><td class="rn ${band}">${esc(p.code)}</td>`;
     if(phase==='dev'){
