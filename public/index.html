@@ -237,7 +237,7 @@ const SHIP_COLS=[
 ];
 const BAND=['band-0','band-1','band-2','band-3'];
 
-let DATA=[],YEARS=[],CUR_YEAR=2026,activeTab='overview',currentUser=null,saveTimer=null,modalMaster={};
+let DATA=[],YEARS=[],CUR_YEAR=2026,activeTab='overview',currentUser=null,saveTimer=null,modalMaster={},insertBeforeId=null;
 
 // ── Auth ──
 async function checkAuth(){const{data:{session}}=await sb.auth.getSession();if(session){currentUser=session.user;showApp();}}
@@ -324,7 +324,7 @@ function renderOverview(){
     });
     h+=`<td>${progH(calcProg(p,'dev'))}</td><td>${progH(calcProg(p,'sub'))}</td><td>${progH(calcProg(p,'prod'))}</td><td>${progH(calcProg(p,'ship'))}</td>`;
     h+=`<td style="font-size:9px;color:var(--g400);">${p.updated_by?esc(p.updated_by.split('@')[0]):''}</td>`;
-    h+=`<td><button class="btn btn-d btn-sm" onclick="delProduct('${p.id}')">削除</button></td></tr>`;
+    h+=`<td style="white-space:nowrap;"><button class="btn btn-o btn-sm" onclick="openAddBefore('${p.id}')" title="この品番の上に追加">＋↑</button> <button class="btn btn-d btn-sm" onclick="delProduct('${p.id}')">削除</button></td></tr>`;
   });
   h+=`</tbody></table></div>`;return h;
 }
@@ -399,13 +399,26 @@ function setMM(k,v){modalMaster[k]=v;renderMM();}
 function onCatChange(){const c=document.getElementById('aCat').value;if(c&&c!=='バッテリー')modalMaster.pse='不要';renderMM();}
 
 function openAdd(){
-  document.getElementById('addTitle').textContent='新規商品登録';
+  insertBeforeId=null;
+  document.getElementById('addTitle').textContent='新規商品登録（末尾に追加）';
   document.getElementById('saveBtn').textContent='登録';
   document.getElementById('editId').value='';
   document.getElementById('aCompany').innerHTML=`<option value="">--</option>`+COMPANIES.map(c=>`<option>${c}</option>`).join('');
   document.getElementById('aCode').value='';
   document.getElementById('aCat').value='';
   document.getElementById('aParent').value='true';
+  initMM();renderMM();openMo('addMo');
+}
+function openAddBefore(beforeId){
+  const target=DATA.find(x=>x.id===beforeId);if(!target)return;
+  insertBeforeId=beforeId;
+  document.getElementById('addTitle').textContent=`新規登録（${target.code} の上に挿入）`;
+  document.getElementById('saveBtn').textContent='挿入';
+  document.getElementById('editId').value='';
+  document.getElementById('aCompany').innerHTML=`<option value="">--</option>`+COMPANIES.map(c=>`<option${target.company===c?' selected':''}>${c}</option>`).join('');
+  document.getElementById('aCode').value='';
+  document.getElementById('aCat').value='';
+  document.getElementById('aParent').value='false';
   initMM();renderMM();openMo('addMo');
 }
 function openEdit(id){
@@ -447,13 +460,25 @@ async function saveNewProduct(){
     closeMo('addMo');render();toast('更新しました');
   }else{
     // 新規登録モード
-    const maxSort=DATA.length?Math.max(...DATA.map(p=>p.sort_order||0))+1:0;
+    let sortOrder;
+    if(insertBeforeId){
+      // 指定品番の上に挿入: 既存のsort_orderをずらす
+      const targetIdx=DATA.findIndex(x=>x.id===insertBeforeId);
+      const targetSort=DATA[targetIdx]?.sort_order||0;
+      sortOrder=targetSort;
+      // targetSort以降の全品番のsort_orderを+1
+      const toUpdate=DATA.filter(x=>(x.sort_order||0)>=targetSort);
+      for(const u of toUpdate){u.sort_order=(u.sort_order||0)+1;await sb.from('products').update({sort_order:u.sort_order}).eq('id',u.id);}
+    }else{
+      sortOrder=DATA.length?Math.max(...DATA.map(p=>p.sort_order||0))+1:0;
+    }
     const id='p_'+Date.now().toString(36)+Math.random().toString(36).substr(2,4);
-    const p={id,year:CUR_YEAR,company,code,is_parent:isParent,sort_order:maxSort,category:cat||'',
+    const p={id,year:CUR_YEAR,company,code,is_parent:isParent,sort_order:sortOrder,category:cat||'',
       master:{...modalMaster},dev:{},sub:{package:{},manual:{}},prod:{},ship:{},
       created_at:new Date().toISOString()};
     await sb.from('products').insert(p);
-    DATA.push(p);closeMo('addMo');render();toast('登録しました');
+    insertBeforeId=null;
+    await loadYear(CUR_YEAR);closeMo('addMo');toast('登録しました');
   }
 }
 
