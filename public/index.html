@@ -368,7 +368,12 @@ function renderPhase(phase){
       const dv=p.dev||{};
       cols.forEach(c=>{if(!dv[c.key])dv[c.key]={};const dis=isDevDis(p,c),v=dv[c.key];
         if(c.isText)h+=`<td class="${dis?'cell-disabled':v.text?'cell-done':'cell-empty'}"><input type="text" value="${esc(v.text||'')}" onchange="updDev('${p.id}','${c.key}','text',this.value)"></td>`;
-        else h+=cellD(dis,v.date||'',`updDev('${p.id}','${c.key}','date',this.value)`);
+        else if(c.hasMethod){
+          h+=`<td class="${dis?'cell-disabled':(v.date||v.method)?'cell-done':'cell-empty'}" style="min-width:110px;">`;
+          if(!dis){h+=`<input type="date" value="${v.date||''}" onchange="updDev('${p.id}','${c.key}','date',this.value)" style="width:55%;display:inline-block;">`;
+            h+=`<select onchange="updDev('${p.id}','${c.key}','method',this.value)" style="width:40%;display:inline-block;"><option value="">--</option>${['電話','WeChat','メール'].map(m=>`<option${v.method===m?' selected':''}>${m}</option>`).join('')}</select>`;}
+          h+=`</td>`;
+        }else h+=cellD(dis,v.date||'',`updDev('${p.id}','${c.key}','date',this.value)`);
       });
     }else if(phase==='sub'){
       cols.forEach(c=>{const sub=p.sub||{};const ty=c.subType;if(!sub[ty])sub[ty]={};const rk=c.key.replace('_m','');if(!sub[ty][rk])sub[ty][rk]={};
