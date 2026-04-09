@@ -308,7 +308,7 @@ function grpIdx(i){let g=-1;for(let j=0;j<=i;j++)if(DATA[j].is_parent)g++;return
 function renderOverview(){
   let h=`<div class="ss-wrap"><table class="ss"><thead><tr><th class="rn">品番</th><th>カテゴリ</th>`;
   MASTER_DEFS.forEach(md=>{h+=`<th>${md.label}</th>`;});
-  h+=`<th style="min-width:60px;">開発</th><th style="min-width:60px;">副資材</th><th style="min-width:60px;">量産</th><th>更新者</th><th></th></tr></thead><tbody>`;
+  h+=`<th style="min-width:60px;">開発</th><th style="min-width:60px;">副資材</th><th style="min-width:60px;">量産</th><th></th></tr></thead><tbody>`;
   DATA.forEach((p,i)=>{
     const g=grpIdx(i),band=p.is_parent?BAND[g%4]:'',rc=p.is_parent?'parent-row':'child-row';
     const m=p.master||{};
@@ -323,7 +323,6 @@ function renderOverview(){
       h+=`<td><span class="${cls}" style="font-size:9px;">${v}</span></td>`;
     });
     h+=`<td>${progH(calcProg(p,'dev'))}</td><td>${progH(calcProg(p,'sub'))}</td><td>${progH(calcProg(p,'prod'))}</td>`;
-    h+=`<td style="font-size:9px;color:var(--g400);">${p.updated_by?esc(p.updated_by.split('@')[0]):''}</td>`;
     h+=`<td style="white-space:nowrap;"><button class="btn btn-o btn-sm" onclick="openAddBefore('${p.id}')" title="この品番の上に追加">＋↑</button> <button class="btn btn-d btn-sm" onclick="delProduct('${p.id}')">削除</button></td></tr>`;
   });
   h+=`</tbody></table></div>`;return h;
