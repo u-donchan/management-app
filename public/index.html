@@ -195,8 +195,8 @@ const SB_URL='https://ootpmvitsggulcqvufsd.supabase.co';
 const SB_KEY='sb_publishable_3trYXswFYXxq5cQji3G81g_woQLl_Xk';
 const sb=supabase.createClient(SB_URL,SB_KEY);
 
-const TABS=['overview','dev','sub','prod','ship'];
-const TAB_LABELS={overview:'一覧',dev:'開発',sub:'副資材',prod:'量産',ship:'ship'};
+const TABS=['overview','dev','sub','prod'];
+const TAB_LABELS={overview:'一覧',dev:'開発',sub:'副資材',prod:'量産'};
 const COMPANIES=['クロダルマ','シンメン','NSP'];
 const CATEGORIES=['ファン','バッテリー','ケーブル','充電器','その他'];
 const MASTER_DEFS=[
@@ -308,7 +308,7 @@ function grpIdx(i){let g=-1;for(let j=0;j<=i;j++)if(DATA[j].is_parent)g++;return
 function renderOverview(){
   let h=`<div class="ss-wrap"><table class="ss"><thead><tr><th class="rn">品番</th><th>カテゴリ</th>`;
   MASTER_DEFS.forEach(md=>{h+=`<th>${md.label}</th>`;});
-  h+=`<th style="min-width:60px;">開発</th><th style="min-width:60px;">副資材</th><th style="min-width:60px;">量産</th><th style="min-width:60px;">ship</th><th>更新者</th><th></th></tr></thead><tbody>`;
+  h+=`<th style="min-width:60px;">開発</th><th style="min-width:60px;">副資材</th><th style="min-width:60px;">量産</th><th>更新者</th><th></th></tr></thead><tbody>`;
   DATA.forEach((p,i)=>{
     const g=grpIdx(i),band=p.is_parent?BAND[g%4]:'',rc=p.is_parent?'parent-row':'child-row';
     const m=p.master||{};
@@ -322,7 +322,7 @@ function renderOverview(){
       if(v==='新規')cls='ms-new';else if(v==='不要')cls='ms-no';else if(v==='部分変更')cls='ms-part';
       h+=`<td><span class="${cls}" style="font-size:9px;">${v}</span></td>`;
     });
-    h+=`<td>${progH(calcProg(p,'dev'))}</td><td>${progH(calcProg(p,'sub'))}</td><td>${progH(calcProg(p,'prod'))}</td><td>${progH(calcProg(p,'ship'))}</td>`;
+    h+=`<td>${progH(calcProg(p,'dev'))}</td><td>${progH(calcProg(p,'sub'))}</td><td>${progH(calcProg(p,'prod'))}</td>`;
     h+=`<td style="font-size:9px;color:var(--g400);">${p.updated_by?esc(p.updated_by.split('@')[0]):''}</td>`;
     h+=`<td style="white-space:nowrap;"><button class="btn btn-o btn-sm" onclick="openAddBefore('${p.id}')" title="この品番の上に追加">＋↑</button> <button class="btn btn-d btn-sm" onclick="delProduct('${p.id}')">削除</button></td></tr>`;
   });
@@ -332,7 +332,7 @@ function renderOverview(){
 // ── Phase ──
 function renderPhase(phase){
   let cols,grps;
-  if(phase==='dev'){cols=DEV_COLS;grps=[{s:1,e:5,l:'見積り・契約・請求',c:'cg-dev'},{s:6,e:8,l:'金型',c:'cg-dev'},{s:9,e:9,l:'加工指示',c:'cg-dev'},{s:10,e:11,l:'顧客確認',c:'cg-dev'}];}
+  if(phase==='dev'){cols=DEV_COLS;grps=[{s:1,e:5,l:'見積り・契約・請求',c:'cg-dev'},{s:6,e:8,l:'金型',c:'cg-dev'},{s:9,e:9,l:'加工指示',c:'cg-dev'},{s:10,e:10,l:'顧客確認',c:'cg-dev'}];}
   else if(phase==='sub'){
     cols=[...SUB_LABELS.map(s=>({...s,subType:'package'})),...SUB_LABELS.map(s=>({key:s.key+'_m',label:s.label,subType:'manual'}))];
     grps=[{s:1,e:6,l:'パッケージ確認フロー',c:'cg-sub'},{s:7,e:12,l:'説明書確認フロー',c:'cg-sub'}];
@@ -341,9 +341,7 @@ function renderPhase(phase){
 
   let h=`<div class="ss-wrap"><table class="ss"><thead><tr><th class="rn" rowspan="2">品番</th>`;
   grps.forEach(g=>{h+=`<th class="${g.c}" colspan="${g.e-g.s+1}">${g.l}</th>`;});
-  if(phase==='dev')h+=`<th class="cg-dev">手段</th>`;
   h+=`</tr><tr>`;cols.forEach(c=>{h+=`<th>${c.label}</th>`;});
-  if(phase==='dev')h+=`<th>手段</th>`;
   h+=`</tr></thead><tbody>`;
 
   DATA.forEach((p,i)=>{
@@ -355,8 +353,6 @@ function renderPhase(phase){
         if(c.isText)h+=`<td class="${dis?'cell-disabled':v.text?'cell-done':'cell-empty'}"><input type="text" value="${esc(v.text||'')}" onchange="updDev('${p.id}','${c.key}','text',this.value)"></td>`;
         else h+=cellD(dis,v.date||'',`updDev('${p.id}','${c.key}','date',this.value)`);
       });
-      const pc=dv.procConfirm||{},dpc=isDevDis(p,{grp:'C-deco'});
-      h+=`<td class="${dpc?'cell-disabled':pc.method?'cell-done':'cell-empty'}"><select onchange="updDev('${p.id}','procConfirm','method',this.value)"><option value="">--</option>${['電話','WeChat','メール'].map(m=>`<option${pc.method===m?' selected':''}>${m}</option>`).join('')}</select></td>`;
     }else if(phase==='sub'){
       cols.forEach(c=>{const sub=p.sub||{};const ty=c.subType;if(!sub[ty])sub[ty]={};const rk=c.key.replace('_m','');if(!sub[ty][rk])sub[ty][rk]={};
         h+=cellD(isSubDis(p,ty),sub[ty][rk].date||'',`updSub('${p.id}','${ty}','${rk}',this.value)`);});
