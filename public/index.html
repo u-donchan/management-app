@@ -56,7 +56,7 @@ body{font-family:"Segoe UI","Hiragino Sans","Meiryo",sans-serif;background:var(-
 .ss th.cg-dev{background:var(--pri-l);color:var(--pri-d);} .ss th.cg-sub{background:#fef3c7;color:#92400e;}
 .ss th.cg-prod{background:var(--ok-l);color:#166534;} .ss th.cg-ship{background:#fde68a;color:#78350f;}
 .ss td{padding:2px 4px;border:1px solid var(--g200);text-align:center;vertical-align:middle;min-width:78px;}
-.ss .rn{position:sticky;left:0;z-index:1;background:#fff;text-align:left;font-weight:600;min-width:100px;max-width:120px;padding:2px 6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.ss .rn{position:sticky;left:0;z-index:1;background:#fff;text-align:left;font-weight:600;min-width:70px;max-width:95px;padding:2px 4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .ss tr:hover td{background:var(--g50);} .ss tr:hover .rn{background:var(--pri-l);}
 .ss tr.parent-row .rn{font-weight:700;font-size:11px;} .ss tr.child-row .rn{color:var(--g500);padding-left:14px;font-size:10px;}
 .rn-link{cursor:pointer;color:var(--pri);text-decoration:none;} .rn-link:hover{text-decoration:underline;}
@@ -82,7 +82,7 @@ body{font-family:"Segoe UI","Hiragino Sans","Meiryo",sans-serif;background:var(-
 
 /* Progress */
 .prog{display:flex;align-items:center;gap:3px;}
-.prog-bar{flex:1;height:4px;background:var(--g200);border-radius:2px;overflow:hidden;min-width:30px;}
+.prog-bar{flex:1;height:4px;background:var(--g200);border-radius:2px;overflow:hidden;min-width:45px;}
 .prog-fill{height:100%;border-radius:2px;} .pf-lo{background:var(--err);} .pf-mi{background:var(--warn);} .pf-hi{background:var(--ok);}
 
 /* Modal */
@@ -306,14 +306,14 @@ function grpIdx(i){let g=-1;for(let j=0;j<=i;j++)if(DATA[j].is_parent)g++;return
 
 // ── Overview ──
 function renderOverview(){
-  let h=`<div class="ss-wrap"><table class="ss"><thead><tr><th class="rn">品番</th><th>会社</th><th>カテゴリ</th>`;
+  let h=`<div class="ss-wrap"><table class="ss"><thead><tr><th class="rn">品番</th><th>カテゴリ</th>`;
   MASTER_DEFS.forEach(md=>{h+=`<th>${md.label}</th>`;});
-  h+=`<th>開発</th><th>副資材</th><th>量産</th><th>ship</th><th>更新者</th><th></th></tr></thead><tbody>`;
+  h+=`<th style="min-width:60px;">開発</th><th style="min-width:60px;">副資材</th><th style="min-width:60px;">量産</th><th style="min-width:60px;">ship</th><th>更新者</th><th></th></tr></thead><tbody>`;
   DATA.forEach((p,i)=>{
     const g=grpIdx(i),band=p.is_parent?BAND[g%4]:'',rc=p.is_parent?'parent-row':'child-row';
     const m=p.master||{};
     h+=`<tr class="${rc}"><td class="rn ${band}"><span class="rn-link" onclick="openEdit('${p.id}')">${esc(p.code)}</span></td>
-      <td>${esc(p.company)}</td><td>${esc(p.category||'')}</td>`;
+      <td>${esc(p.category||'')}</td>`;
     // マスター: 設定されているものだけ各列に表示
     MASTER_DEFS.forEach(md=>{
       const v=m[md.key];
