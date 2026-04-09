@@ -306,24 +306,22 @@ function grpIdx(i){let g=-1;for(let j=0;j<=i;j++)if(DATA[j].is_parent)g++;return
 
 // ── Overview ──
 function renderOverview(){
-  let h=`<div class="ss-wrap"><table class="ss"><thead><tr><th class="rn">品番</th><th>会社</th><th>カテゴリ</th><th>マスター設定</th>
-    <th>開発</th><th>副資材</th><th>量産</th><th>ship</th><th>更新者</th><th></th></tr></thead><tbody>`;
+  let h=`<div class="ss-wrap"><table class="ss"><thead><tr><th class="rn">品番</th><th>会社</th><th>カテゴリ</th>`;
+  MASTER_DEFS.forEach(md=>{h+=`<th>${md.label}</th>`;});
+  h+=`<th>開発</th><th>副資材</th><th>量産</th><th>ship</th><th>更新者</th><th></th></tr></thead><tbody>`;
   DATA.forEach((p,i)=>{
     const g=grpIdx(i),band=p.is_parent?BAND[g%4]:'',rc=p.is_parent?'parent-row':'child-row';
     const m=p.master||{};
-    // マスターバッジ: 設定されているものだけ表示
-    let badges='';
+    h+=`<tr class="${rc}"><td class="rn ${band}"><span class="rn-link" onclick="openEdit('${p.id}')">${esc(p.code)}</span></td>
+      <td>${esc(p.company)}</td><td>${esc(p.category||'')}</td>`;
+    // マスター: 設定されているものだけ各列に表示
     MASTER_DEFS.forEach(md=>{
       const v=m[md.key];
-      if(!v)return;
+      if(!v){h+=`<td></td>`;return;}
       let cls='ms-same';
       if(v==='新規')cls='ms-new';else if(v==='不要')cls='ms-no';else if(v==='部分変更')cls='ms-part';
-      badges+=`<span class="${cls}" style="margin:1px 2px;display:inline-block;font-size:9px;">${md.label}:${v}</span> `;
+      h+=`<td><span class="${cls}" style="font-size:9px;">${v}</span></td>`;
     });
-    if(!badges)badges='<span style="color:var(--g400);font-size:9px;">未設定</span>';
-    h+=`<tr class="${rc}"><td class="rn ${band}"><span class="rn-link" onclick="openEdit('${p.id}')">${esc(p.code)}</span></td>
-      <td>${esc(p.company)}</td><td>${esc(p.category||'')}</td>
-      <td style="max-width:260px;white-space:normal;line-height:1.6;">${badges}</td>`;
     h+=`<td>${progH(calcProg(p,'dev'))}</td><td>${progH(calcProg(p,'sub'))}</td><td>${progH(calcProg(p,'prod'))}</td><td>${progH(calcProg(p,'ship'))}</td>`;
     h+=`<td style="font-size:9px;color:var(--g400);">${p.updated_by?esc(p.updated_by.split('@')[0]):''}</td>`;
     h+=`<td><button class="btn btn-d btn-sm" onclick="delProduct('${p.id}')">削除</button></td></tr>`;
