@@ -63,9 +63,9 @@ body{font-family:"Segoe UI","Hiragino Sans","Meiryo",sans-serif;background:var(-
 .ss tr.parent-row .rn{font-weight:700;font-size:11px;} .ss tr.child-row .rn{color:var(--g500);padding-left:14px;font-size:10px;}
 .rn-link{cursor:pointer;color:var(--pri);text-decoration:none;} .rn-link:hover{text-decoration:underline;}
 .ss tr.empty-row td{height:4px;background:var(--g100);padding:0;}
-.ss tr.company-row td{background:var(--g700);color:#fff;font-weight:700;font-size:11px;padding:4px 8px;border-color:var(--g700);}
-.ss tr.company-row .rn{background:var(--g700);color:#fff;}
-.band-0{background:#D6E4F0 !important;} .band-1{background:#E2EFDA !important;} .band-2{background:#FCE4D6 !important;} .band-3{background:#E2D9F3 !important;}
+.ss tr.company-row td{background:var(--pri-l);color:var(--pri-d);font-weight:700;font-size:11px;padding:4px 8px;border-color:var(--pri-l);}
+.ss tr.company-row .rn{background:var(--pri-l);color:var(--pri-d);}
+.band-parent{background:#EDF2F7 !important;}
 
 /* Cell */
 .cell-empty{background:var(--warn-ll);} .cell-done{background:var(--ok-ll);}
@@ -239,7 +239,7 @@ const SHIP_COLS=[
   {key:'customsDoc',label:'通関書類'},{key:'customsDone',label:'通関完了'},
   {key:'warehouse',label:'倉庫入荷'},{key:'inspect',label:'入荷検品'},{key:'delivered',label:'納品完了'}
 ];
-const BAND=['band-0','band-1','band-2','band-3'];
+// 親品番だけ薄い背景色、子品番は白
 
 let DATA=[],YEARS=[],CUR_YEAR=2026,activeTab='overview',currentUser=null,saveTimer=null,modalMaster={},insertBeforeId=null;
 
@@ -322,7 +322,7 @@ function renderOverview(){
       h+=`<tr class="company-row"><td class="rn" colspan="${ovCols}">${esc(p.company)}</td></tr>`;
       prevCompany=p.company;
     }
-    const g=grpIdx(i),band=p.is_parent?BAND[g%4]:'',rc=p.is_parent?'parent-row':'child-row';
+    const band=p.is_parent?'band-parent':'',rc=p.is_parent?'parent-row':'child-row';
     const m=p.master||{};
     h+=`<tr class="${rc}"><td class="rn ${band}"><span class="rn-link" onclick="openEdit('${p.id}')">${esc(p.code)}</span></td>
       <td>${esc(p.category||'')}</td>`;
@@ -362,7 +362,7 @@ function renderPhase(phase){
       h+=`<tr class="company-row"><td class="rn" colspan="${phaseCols}">${esc(p.company)}</td></tr>`;
       prevCo=p.company;
     }
-    const g=grpIdx(i),band=p.is_parent?BAND[g%4]:'',rc=p.is_parent?'parent-row':'child-row';
+    const band=p.is_parent?'band-parent':'',rc=p.is_parent?'parent-row':'child-row';
     h+=`<tr class="${rc}"><td class="rn ${band}">${esc(p.code)}</td>`;
     if(phase==='dev'){
       const dv=p.dev||{};
