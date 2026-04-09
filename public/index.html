@@ -59,6 +59,7 @@ body{font-family:"Segoe UI","Hiragino Sans","Meiryo",sans-serif;background:var(-
 .ss .rn{position:sticky;left:0;z-index:1;background:#fff;text-align:left;font-weight:600;min-width:100px;max-width:120px;padding:2px 6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .ss tr:hover td{background:var(--g50);} .ss tr:hover .rn{background:var(--pri-l);}
 .ss tr.parent-row .rn{font-weight:700;font-size:11px;} .ss tr.child-row .rn{color:var(--g500);padding-left:14px;font-size:10px;}
+.rn-link{cursor:pointer;color:var(--pri);text-decoration:none;} .rn-link:hover{text-decoration:underline;}
 .ss tr.empty-row td{height:4px;background:var(--g100);padding:0;}
 .band-0{background:#D6E4F0 !important;} .band-1{background:#E2EFDA !important;} .band-2{background:#FCE4D6 !important;} .band-3{background:#E2D9F3 !important;}
 
@@ -305,29 +306,29 @@ function grpIdx(i){let g=-1;for(let j=0;j<=i;j++)if(DATA[j].is_parent)g++;return
 
 // ── Overview ──
 function renderOverview(){
-  let h=`<div class="ss-wrap"><table class="ss"><thead><tr><th class="rn">品番</th><th>会社</th><th>カテゴリ</th>`;
-  MASTER_DEFS.forEach(m=>{h+=`<th>${m.label}</th>`;});
-  h+=`<th>開発</th><th>副資材</th><th>量産</th><th>ship</th><th>更新者</th><th></th></tr></thead><tbody>`;
+  let h=`<div class="ss-wrap"><table class="ss"><thead><tr><th class="rn">品番</th><th>会社</th><th>カテゴリ</th><th>マスター設定</th>
+    <th>開発</th><th>副資材</th><th>量産</th><th>ship</th><th>更新者</th><th></th></tr></thead><tbody>`;
   DATA.forEach((p,i)=>{
     const g=grpIdx(i),band=p.is_parent?BAND[g%4]:'',rc=p.is_parent?'parent-row':'child-row';
     const m=p.master||{};
-    h+=`<tr class="${rc}"><td class="rn ${band}">${esc(p.code)}</td>
-      <td>${esc(p.company)}</td><td>${esc(p.category||'')}</td>`;
+    // マスターバッジ: 設定されているものだけ表示
+    let badges='';
     MASTER_DEFS.forEach(md=>{
-      const v=m[md.key]||'';
-      h+=`<td>${masterSel(p.id,md.key,v,md.opts)}</td>`;
+      const v=m[md.key];
+      if(!v)return;
+      let cls='ms-same';
+      if(v==='新規')cls='ms-new';else if(v==='不要')cls='ms-no';else if(v==='部分変更')cls='ms-part';
+      badges+=`<span class="${cls}" style="margin:1px 2px;display:inline-block;font-size:9px;">${md.label}:${v}</span> `;
     });
+    if(!badges)badges='<span style="color:var(--g400);font-size:9px;">未設定</span>';
+    h+=`<tr class="${rc}"><td class="rn ${band}"><span class="rn-link" onclick="openEdit('${p.id}')">${esc(p.code)}</span></td>
+      <td>${esc(p.company)}</td><td>${esc(p.category||'')}</td>
+      <td style="max-width:260px;white-space:normal;line-height:1.6;">${badges}</td>`;
     h+=`<td>${progH(calcProg(p,'dev'))}</td><td>${progH(calcProg(p,'sub'))}</td><td>${progH(calcProg(p,'prod'))}</td><td>${progH(calcProg(p,'ship'))}</td>`;
     h+=`<td style="font-size:9px;color:var(--g400);">${p.updated_by?esc(p.updated_by.split('@')[0]):''}</td>`;
     h+=`<td><button class="btn btn-d btn-sm" onclick="delProduct('${p.id}')">削除</button></td></tr>`;
   });
   h+=`</tbody></table></div>`;return h;
-}
-function masterSel(pid,key,cur,opts){
-  return`<div class="ms-sel">${opts.map(o=>{
-    let c='';if(cur===o){c=o==='新規'?'act-new':o==='部分変更'?'act-part':o==='去年と同様'?'act-same':'act-no';}
-    return`<button class="${c}" onclick="setMaster('${pid}','${key}','${o}')">${o}</button>`;
-  }).join('')}</div>`;
 }
 
 // ── Phase ──
@@ -376,7 +377,7 @@ function cellD(dis,val,onch){
 }
 
 // ── Updates ──
-async function setMaster(id,key,val){const p=DATA.find(x=>x.id===id);if(!p)return;if(!p.master)p.master={};const old=p.master[key];p.master[key]=val;await saveProduct(p);if(old!==val)logEdit(id,`master.${key}`,old||'',val);render();}
+// setMaster is now handled through edit modal
 async function updDev(id,k,f,v){const p=DATA.find(x=>x.id===id);if(!p)return;if(!p.dev)p.dev={};if(!p.dev[k])p.dev[k]={};p.dev[k][f]=v;debounceSave(p);render();}
 async function updSub(id,ty,k,v){const p=DATA.find(x=>x.id===id);if(!p)return;if(!p.sub)p.sub={};if(!p.sub[ty])p.sub[ty]={};if(!p.sub[ty][k])p.sub[ty][k]={};p.sub[ty][k].date=v;debounceSave(p);render();}
 async function updProd(id,k,v){const p=DATA.find(x=>x.id===id);if(!p)return;if(!p.prod)p.prod={};if(!p.prod[k])p.prod[k]={};p.prod[k].date=v;debounceSave(p);render();}
@@ -409,19 +410,53 @@ function openAdd(){
   document.getElementById('aParent').value='true';
   initMM();renderMM();openMo('addMo');
 }
+function openEdit(id){
+  const p=DATA.find(x=>x.id===id);if(!p)return;
+  document.getElementById('addTitle').textContent='品番編集';
+  document.getElementById('saveBtn').textContent='更新';
+  document.getElementById('editId').value=id;
+  document.getElementById('aCompany').innerHTML=`<option value="">--</option>`+COMPANIES.map(c=>`<option${p.company===c?' selected':''}>${c}</option>`).join('');
+  document.getElementById('aCode').value=p.code||'';
+  document.getElementById('aCat').value=p.category||'';
+  document.getElementById('aParent').value=p.is_parent?'true':'false';
+  modalMaster={...(p.master||{})};renderMM();openMo('addMo');
+}
 async function saveNewProduct(){
   const company=document.getElementById('aCompany').value;
   const code=document.getElementById('aCode').value.trim();
   if(!company||!code){toast('会社名と品番を入力');return;}
   const cat=document.getElementById('aCat').value;
   const isParent=document.getElementById('aParent').value==='true';
-  const maxSort=DATA.length?Math.max(...DATA.map(p=>p.sort_order||0))+1:0;
-  const id='p_'+Date.now().toString(36)+Math.random().toString(36).substr(2,4);
-  const p={id,year:CUR_YEAR,company,code,is_parent:isParent,sort_order:maxSort,category:cat||'',
-    master:{...modalMaster},dev:{},sub:{package:{},manual:{}},prod:{},ship:{},
-    updated_by:currentUser.email,updated_at:new Date().toISOString(),created_at:new Date().toISOString()};
-  await sb.from('products').insert(p);
-  DATA.push(p);closeMo('addMo');render();toast('登録しました');
+  const editId=document.getElementById('editId').value;
+
+  if(editId){
+    // 編集モード
+    const p=DATA.find(x=>x.id===editId);if(!p)return;
+    const changes=[];
+    if(p.company!==company)changes.push({field:'company',old:p.company,new:company});
+    if(p.code!==code)changes.push({field:'code',old:p.code,new:code});
+    if(p.category!==cat)changes.push({field:'category',old:p.category,new:cat});
+    if(p.is_parent!==isParent)changes.push({field:'is_parent',old:String(p.is_parent),new:String(isParent)});
+    MASTER_DEFS.forEach(md=>{
+      const oldV=(p.master||{})[md.key]||'';const newV=modalMaster[md.key]||'';
+      if(oldV!==newV)changes.push({field:`master.${md.key}`,old:oldV,new:newV});
+    });
+    p.company=company;p.code=code;p.category=cat;p.is_parent=isParent;p.master={...modalMaster};
+    p.updated_by=currentUser.email;p.updated_at=new Date().toISOString();
+    await sb.from('products').upsert(p);
+    // 変更ログ記録
+    for(const c of changes){await sb.from('edit_logs').insert({product_id:editId,field:c.field,old_value:c.old,new_value:c.new,edited_by:currentUser.email});}
+    closeMo('addMo');render();toast('更新しました');
+  }else{
+    // 新規登録モード
+    const maxSort=DATA.length?Math.max(...DATA.map(p=>p.sort_order||0))+1:0;
+    const id='p_'+Date.now().toString(36)+Math.random().toString(36).substr(2,4);
+    const p={id,year:CUR_YEAR,company,code,is_parent:isParent,sort_order:maxSort,category:cat||'',
+      master:{...modalMaster},dev:{},sub:{package:{},manual:{}},prod:{},ship:{},
+      created_at:new Date().toISOString()};
+    await sb.from('products').insert(p);
+    DATA.push(p);closeMo('addMo');render();toast('登録しました');
+  }
 }
 
 // ── Delete Product ──
