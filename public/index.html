@@ -52,10 +52,7 @@ body{font-family:"Segoe UI","Hiragino Sans","Meiryo",sans-serif;background:var(-
 /* Spreadsheet */
 .ss-wrap{overflow:auto;max-height:calc(100vh - 90px);background:#fff;border-radius:var(--r);box-shadow:0 1px 3px rgba(0,0,0,.08);border:1px solid var(--g200);}
 .ss{border-collapse:collapse;font-size:11px;width:max-content;min-width:100%;}
-.ss th{background:var(--g100);padding:3px 6px;text-align:center;font-weight:600;color:var(--g600);border:1px solid var(--g200);white-space:nowrap;position:sticky;z-index:3;font-size:10px;}
-.ss thead tr:first-child th{top:0;} .ss thead tr:nth-child(2) th{top:22px;}
-.ss th.cg-dev{background:var(--pri-l);color:var(--pri-d);} .ss th.cg-sub{background:#fef3c7;color:#92400e;}
-.ss th.cg-prod{background:var(--ok-l);color:#166534;} .ss th.cg-ship{background:#fde68a;color:#78350f;}
+.ss th{background:var(--g100);padding:6px 8px;text-align:center;font-weight:700;color:var(--g700);border:1px solid var(--g200);white-space:nowrap;position:sticky;top:0;z-index:3;font-size:11px;}
 .ss td{padding:2px 4px;border:1px solid var(--g200);text-align:center;vertical-align:middle;min-width:78px;}
 .ss .rn{position:sticky;left:0;z-index:2;background:#fff;text-align:left;font-weight:600;min-width:70px;max-width:95px;padding:2px 4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .ss thead th:first-child{position:sticky;left:0;z-index:5;}
@@ -350,9 +347,8 @@ function renderPhase(phase){
   }else if(phase==='prod'){cols=PROD_COLS;grps=[{s:1,e:7,l:'資材データ',c:'cg-prod'},{s:8,e:12,l:'認証・検査',c:'cg-prod'}];}
   else{cols=SHIP_COLS;grps=[{s:1,e:6,l:'出荷',c:'cg-ship'},{s:7,e:11,l:'通関・納品',c:'cg-ship'}];}
 
-  let h=`<div class="ss-wrap"><table class="ss"><thead><tr><th class="rn" rowspan="2">品番</th>`;
-  grps.forEach(g=>{h+=`<th class="${g.c}" colspan="${g.e-g.s+1}">${g.l}</th>`;});
-  h+=`</tr><tr>`;cols.forEach(c=>{h+=`<th>${c.label}</th>`;});
+  let h=`<div class="ss-wrap"><table class="ss"><thead><tr><th class="rn">品番</th>`;
+  cols.forEach(c=>{h+=`<th>${c.label}</th>`;});
   h+=`</tr></thead><tbody>`;
   const phaseCols=1+cols.length;
   let prevCo='';
