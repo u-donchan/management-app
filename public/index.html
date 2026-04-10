@@ -161,7 +161,7 @@ body{font-family:"Segoe UI","Hiragino Sans","Meiryo",sans-serif;background:var(-
           <select id="aCat" onchange="onCatChange()"><option value="">--</option><option>ファン</option><option>バッテリー</option><option>ケーブル</option><option>充電器</option><option>その他</option></select>
         </div>
       </div>
-      <div class="fg"><label>親品番？</label><select id="aParent" onchange="onParentChange()"><option value="true">親品番</option><option value="false">子品番</option></select></div>
+      <div class="fg"><label>親品番</label><select id="aParent" onchange="onParentChange()"><option value="true">親品番</option><option value="false">子品番</option></select></div>
       <div style="margin-top:6px;">
         <div class="ms-label">📌 品番マスター設定</div>
         <div id="masterFields"></div>
@@ -207,8 +207,8 @@ const MASTER_DEFS=[
   {key:'package',label:'パッケージ',opts:['新規','去年と同様','不要']},
   {key:'blister',label:'ブリスター',opts:['新規','去年と同様','不要']},
   {key:'manual',label:'説明書',opts:['新規','去年と同様','不要']},
-  {key:'mold',label:'金型',opts:['新規','部分変更','去年と同様']},
-  {key:'decoration',label:'加飾指示',opts:['新規','部分変更','去年と同様']},
+  {key:'mold',label:'金型',opts:['新規','部分変更','去年と同様','不要']},
+  {key:'decoration',label:'加飾指示',opts:['新規','部分変更','去年と同様','不要']},
   {key:'pse',label:'PSE',opts:['新規','去年と同様','不要']}
 ];
 const DEV_COLS=[
@@ -226,9 +226,9 @@ const SUB_LABELS=[
   {key:'rev3',label:'修正3回目お客様確認'},{key:'final',label:'最終確認完了'}
 ];
 const PROD_COLS=[
-  {key:'colorBox',label:'カラーBOX',rst:null},{key:'blister',label:'ブリスター',rst:'blister'},
-  {key:'manual',label:'取説',rst:null},{key:'colorBoxMat',label:'BOX材料',rst:null},
-  {key:'outerBox',label:'外箱マーク',rst:null},{key:'label',label:'ラベル',rst:null},
+  {key:'colorBox',label:'パッケージ',rst:null},{key:'blister',label:'ブリスター',rst:'blister'},
+  {key:'manual',label:'説明書',rst:null},{key:'colorBoxMat',label:'パッケージ材料',rst:null},
+  {key:'outerBox',label:'ケースマーク',rst:null},{key:'label',label:'ラベル',rst:null},
   {key:'labelMat',label:'ラベル材質',rst:null},{key:'pse',label:'PSE',rst:'battery'},
   {key:'un383',label:'UN38.3',rst:'battery'},{key:'msds',label:'MSDS',rst:'battery'},
   {key:'nonAppl',label:'非該当証明書',rst:'battery'},{key:'selfInsp',label:'自主検査',rst:'battery'}
