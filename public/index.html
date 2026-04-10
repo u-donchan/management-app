@@ -158,10 +158,10 @@ body{font-family:"Segoe UI","Hiragino Sans","Meiryo",sans-serif;background:var(-
         <div class="fg"><label>会社名 *</label><select id="aCompany"></select></div>
         <div class="fg"><label>品番 *</label><input type="text" id="aCode"></div>
         <div class="fg"><label>カテゴリ</label>
-          <select id="aCat" onchange="onCatChange()"><option value="">--</option><option>ファン</option><option>バッテリー</option><option>ケーブル</option><option>充電器</option><option>その他</option></select>
+          <select id="aCat" onchange="onCatChange()"></select>
         </div>
       </div>
-      <div class="fg"><label>親品番</label><select id="aParent" onchange="onParentChange()"><option value="true">親品番</option><option value="false">子品番</option></select></div>
+      <div class="fg"><label>親 / 子</label><select id="aParent" onchange="onParentChange()"><option value="true">親品番</option><option value="false">子品番</option></select></div>
       <div style="margin-top:6px;">
         <div class="ms-label">📌 品番マスター設定</div>
         <div id="masterFields"></div>
@@ -433,6 +433,8 @@ function setMM(k,v){modalMaster[k]=v;renderMM();}
 function onCatChange(){renderMM();}
 function onParentChange(){renderMM();}
 
+function setCatOptions(sel){document.getElementById('aCat').innerHTML=`<option value="">--</option>`+CATEGORIES.map(c=>`<option${c===sel?' selected':''}>${c}</option>`).join('');}
+
 function openAdd(){
   insertBeforeId=null;
   document.getElementById('addTitle').textContent='新規商品登録（末尾に追加）';
@@ -440,7 +442,7 @@ function openAdd(){
   document.getElementById('editId').value='';
   document.getElementById('aCompany').innerHTML=`<option value="">--</option>`+COMPANIES.map(c=>`<option>${c}</option>`).join('');
   document.getElementById('aCode').value='';
-  document.getElementById('aCat').value='';
+  setCatOptions('');
   document.getElementById('aParent').value='true';
   initMM();renderMM();openMo('addMo');
 }
@@ -452,7 +454,7 @@ function openAddBefore(beforeId){
   document.getElementById('editId').value='';
   document.getElementById('aCompany').innerHTML=`<option value="">--</option>`+COMPANIES.map(c=>`<option${target.company===c?' selected':''}>${c}</option>`).join('');
   document.getElementById('aCode').value='';
-  document.getElementById('aCat').value='';
+  setCatOptions('');
   document.getElementById('aParent').value='false';
   initMM();renderMM();openMo('addMo');
 }
@@ -463,7 +465,7 @@ function openEdit(id){
   document.getElementById('editId').value=id;
   document.getElementById('aCompany').innerHTML=`<option value="">--</option>`+COMPANIES.map(c=>`<option${p.company===c?' selected':''}>${c}</option>`).join('');
   document.getElementById('aCode').value=p.code||'';
-  document.getElementById('aCat').value=p.category||'';
+  setCatOptions(p.category||'');
   document.getElementById('aParent').value=p.is_parent?'true':'false';
   modalMaster={...(p.master||{})};renderMM();openMo('addMo');
 }
