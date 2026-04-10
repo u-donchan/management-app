@@ -408,15 +408,17 @@ async function logEdit(pid,field,ov,nv){await sb.from('edit_logs').insert({produ
 // ── Add Product ──
 function initMM(){modalMaster={};MASTER_DEFS.forEach(m=>{modalMaster[m.key]=m.opts[0];});}
 function applyAutoRules(){
-  // 親品番 → カテゴリ:セット、金型/加飾指示/PSE:不要
   const isParent=document.getElementById('aParent').value==='true';
+  // 親品番 → カテゴリ:セット、金型/加飾指示/PSE:不要
   if(isParent){
     document.getElementById('aCat').value='セット';
     modalMaster.mold='不要';modalMaster.decoration='不要';modalMaster.pse='不要';
   }
-  // カテゴリ: セット/ファン/ケーブル → PSE:不要
   const cat=document.getElementById('aCat').value;
+  // カテゴリ: セット/ファン/ケーブル → PSE:不要
   if(['セット','ファン','ケーブル'].includes(cat))modalMaster.pse='不要';
+  // カテゴリ: ケーブル/充電器 → ブリスター:不要、説明書:不要、加飾指示:不要
+  if(['ケーブル','充電器'].includes(cat)){modalMaster.blister='不要';modalMaster.manual='不要';modalMaster.decoration='不要';}
 }
 function renderMM(){
   applyAutoRules();
@@ -427,6 +429,7 @@ function renderMM(){
     // ロック判定: 自動設定されている項目
     let locked=false,reason='';
     if(m.key==='pse'&&['セット','ファン','ケーブル'].includes(cat)){locked=true;reason='自動:不要';}
+    if(['ケーブル','充電器'].includes(cat)&&(m.key==='blister'||m.key==='manual'||m.key==='decoration')){locked=true;reason='自動:不要';}
     if(isParent&&(m.key==='mold'||m.key==='decoration'||m.key==='pse')){locked=true;reason='親品番:不要';}
     return`<div class="ms-row"><span class="ms-name">${m.label}</span><div class="ms-sel">${
       m.opts.map(o=>{let c='';if(cur===o){c=o==='新規'?'act-new':o==='部分変更'?'act-part':o==='去年と同様'?'act-same':'act-no';}
