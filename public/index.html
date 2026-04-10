@@ -161,7 +161,7 @@ body{font-family:"Segoe UI","Hiragino Sans","Meiryo",sans-serif;background:var(-
           <select id="aCat" onchange="onCatChange()"><option value="">--</option><option>ファン</option><option>バッテリー</option><option>ケーブル</option><option>充電器</option><option>その他</option></select>
         </div>
       </div>
-      <div class="fg"><label>親品番？</label><select id="aParent"><option value="true">親品番</option><option value="false">子品番</option></select></div>
+      <div class="fg"><label>親品番？</label><select id="aParent" onchange="onParentChange()"><option value="true">親品番</option><option value="false">子品番</option></select></div>
       <div style="margin-top:6px;">
         <div class="ms-label">📌 品番マスター設定</div>
         <div id="masterFields"></div>
@@ -202,7 +202,7 @@ const sb=supabase.createClient(SB_URL,SB_KEY);
 const TABS=['overview','dev','sub','prod'];
 const TAB_LABELS={overview:'一覧',dev:'開発',sub:'副資材',prod:'量産'};
 const COMPANIES=['クロダルマ','シンメン','NSP'];
-const CATEGORIES=['ファン','バッテリー','ケーブル','充電器','その他'];
+const CATEGORIES=['セット','ファン','バッテリー','ケーブル','充電器','その他'];
 const MASTER_DEFS=[
   {key:'package',label:'パッケージ',opts:['新規','去年と同様','不要']},
   {key:'blister',label:'ブリスター',opts:['新規','去年と同様','不要']},
@@ -279,7 +279,7 @@ function isDevDis(p,c){const m=p.master||{};
 function isSubDis(p,ty){const m=p.master||{};const v=ty==='package'?m.package:m.manual;return v==='去年と同様'||v==='不要';}
 function isProdDis(p,c){const m=p.master||{};
   if(c.rst==='blister')return m.blister==='去年と同様'||m.blister==='不要';
-  if(c.rst==='battery')return p.category!=='バッテリー';return false;}
+  if(c.rst==='battery')return ['セット','ファン','ケーブル'].includes(p.category);return false;}
 
 // ── Progress ──
 function calcProg(p,phase){
@@ -402,19 +402,36 @@ async function logEdit(pid,field,ov,nv){await sb.from('edit_logs').insert({produ
 
 // ── Add Product ──
 function initMM(){modalMaster={};MASTER_DEFS.forEach(m=>{modalMaster[m.key]=m.opts[0];});}
-function renderMM(){
+function applyAutoRules(){
+  // 親品番 → カテゴリ:セット、金型/加飾指示/PSE:不要
+  const isParent=document.getElementById('aParent').value==='true';
+  if(isParent){
+    document.getElementById('aCat').value='セット';
+    modalMaster.mold='不要';modalMaster.decoration='不要';modalMaster.pse='不要';
+  }
+  // カテゴリ: セット/ファン/ケーブル → PSE:不要
   const cat=document.getElementById('aCat').value;
-  if(cat&&cat!=='バッテリー')modalMaster.pse='不要';
+  if(['セット','ファン','ケーブル'].includes(cat))modalMaster.pse='不要';
+}
+function renderMM(){
+  applyAutoRules();
+  const cat=document.getElementById('aCat').value;
+  const isParent=document.getElementById('aParent').value==='true';
   document.getElementById('masterFields').innerHTML=MASTER_DEFS.map(m=>{
-    const cur=modalMaster[m.key],locked=m.key==='pse'&&cat&&cat!=='バッテリー';
+    const cur=modalMaster[m.key];
+    // ロック判定: 自動設定されている項目
+    let locked=false,reason='';
+    if(m.key==='pse'&&['セット','ファン','ケーブル'].includes(cat)){locked=true;reason='自動:不要';}
+    if(isParent&&(m.key==='mold'||m.key==='decoration'||m.key==='pse')){locked=true;reason='親品番:不要';}
     return`<div class="ms-row"><span class="ms-name">${m.label}</span><div class="ms-sel">${
       m.opts.map(o=>{let c='';if(cur===o){c=o==='新規'?'act-new':o==='部分変更'?'act-part':o==='去年と同様'?'act-same':'act-no';}
         return`<button class="${c}" style="${locked&&o!==cur?'opacity:.3;pointer-events:none;':''}" onclick="setMM('${m.key}','${o}')">${o}</button>`;
-      }).join('')}</div>${locked?'<span style="font-size:9px;color:var(--g400);">自動</span>':''}</div>`;
+      }).join('')}</div>${locked?`<span style="font-size:9px;color:var(--g400);">${reason}</span>`:''}</div>`;
   }).join('');
 }
 function setMM(k,v){modalMaster[k]=v;renderMM();}
-function onCatChange(){const c=document.getElementById('aCat').value;if(c&&c!=='バッテリー')modalMaster.pse='不要';renderMM();}
+function onCatChange(){renderMM();}
+function onParentChange(){renderMM();}
 
 function openAdd(){
   insertBeforeId=null;
