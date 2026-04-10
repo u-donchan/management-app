@@ -227,9 +227,9 @@ const SUB_LABELS=[
 ];
 const PROD_COLS=[
   {key:'colorBox',label:'パッケージ',rst:null},{key:'blister',label:'ブリスター',rst:'blister'},
-  {key:'manual',label:'説明書',rst:null},{key:'colorBoxMat',label:'パッケージ材料',rst:null},
+  {key:'manual',label:'説明書',rst:null},{key:'colorBoxMat',label:'パッケージ材料',rst:null,isText:true},
   {key:'outerBox',label:'ケースマーク',rst:null},{key:'label',label:'ラベル',rst:null},
-  {key:'labelMat',label:'ラベル材質',rst:null},{key:'pse',label:'PSE',rst:'battery'},
+  {key:'labelMat',label:'ラベル材質',rst:null,isText:true},{key:'pse',label:'PSE',rst:'battery'},
   {key:'un383',label:'UN38.3',rst:'battery'},{key:'msds',label:'MSDS',rst:'battery'},
   {key:'nonAppl',label:'非該当証明書',rst:'battery'},{key:'selfInsp',label:'自主検査',rst:'battery'}
 ];
@@ -286,7 +286,7 @@ function calcProg(p,phase){
   let t=0,d=0;
   if(phase==='dev'){DEV_COLS.forEach(c=>{if(c.isText)return;if(!isDevDis(p,c)){t++;const v=(p.dev||{})[c.key];if(v&&v.date)d++;}});}
   else if(phase==='sub'){['package','manual'].forEach(ty=>{if(!isSubDis(p,ty))SUB_LABELS.forEach(s=>{t++;const v=((p.sub||{})[ty]||{})[s.key];if(v&&v.date)d++;});});}
-  else if(phase==='prod'){PROD_COLS.forEach(c=>{if(!isProdDis(p,c)){t++;const v=(p.prod||{})[c.key];if(v&&v.date)d++;}});}
+  else if(phase==='prod'){PROD_COLS.forEach(c=>{if(c.isText)return;if(!isProdDis(p,c)){t++;const v=(p.prod||{})[c.key];if(v&&v.date)d++;}});}
   else if(phase==='ship'){SHIP_COLS.forEach(c=>{t++;const v=(p.ship||{})[c.key];if(v&&v.date)d++;});}
   return t?Math.round(d/t*100):100;
 }
@@ -379,7 +379,11 @@ function renderPhase(phase){
       cols.forEach(c=>{const sub=p.sub||{};const ty=c.subType;if(!sub[ty])sub[ty]={};const rk=c.key.replace('_m','');if(!sub[ty][rk])sub[ty][rk]={};
         h+=cellD(isSubDis(p,ty),sub[ty][rk].date||'',`updSub('${p.id}','${ty}','${rk}',this.value)`);});
     }else if(phase==='prod'){
-      const pr=p.prod||{};cols.forEach(c=>{if(!pr[c.key])pr[c.key]={};h+=cellD(isProdDis(p,c),pr[c.key].date||'',`updProd('${p.id}','${c.key}',this.value)`);});
+      const pr=p.prod||{};cols.forEach(c=>{if(!pr[c.key])pr[c.key]={};const dis=isProdDis(p,c),v=pr[c.key];
+        if(c.isText){
+          h+=`<td class="${dis?'cell-disabled':v.text?'cell-done':'cell-empty'}"><input type="text" value="${esc(v.text||'')}" onchange="updProdText('${p.id}','${c.key}',this.value)"></td>`;
+        }else{h+=cellD(dis,v.date||'',`updProd('${p.id}','${c.key}',this.value)`);}
+      });
     }else{
       const sh=p.ship||{};cols.forEach(c=>{if(!sh[c.key])sh[c.key]={};h+=cellD(false,sh[c.key].date||'',`updShip('${p.id}','${c.key}',this.value)`);});
     }
@@ -397,6 +401,7 @@ function cellD(dis,val,onch){
 async function updDev(id,k,f,v){const p=DATA.find(x=>x.id===id);if(!p)return;if(!p.dev)p.dev={};if(!p.dev[k])p.dev[k]={};p.dev[k][f]=v;debounceSave(p);render();}
 async function updSub(id,ty,k,v){const p=DATA.find(x=>x.id===id);if(!p)return;if(!p.sub)p.sub={};if(!p.sub[ty])p.sub[ty]={};if(!p.sub[ty][k])p.sub[ty][k]={};p.sub[ty][k].date=v;debounceSave(p);render();}
 async function updProd(id,k,v){const p=DATA.find(x=>x.id===id);if(!p)return;if(!p.prod)p.prod={};if(!p.prod[k])p.prod[k]={};p.prod[k].date=v;debounceSave(p);render();}
+async function updProdText(id,k,v){const p=DATA.find(x=>x.id===id);if(!p)return;if(!p.prod)p.prod={};if(!p.prod[k])p.prod[k]={};p.prod[k].text=v;debounceSave(p);render();}
 async function updShip(id,k,v){const p=DATA.find(x=>x.id===id);if(!p)return;if(!p.ship)p.ship={};if(!p.ship[k])p.ship[k]={};p.ship[k].date=v;debounceSave(p);render();}
 async function logEdit(pid,field,ov,nv){await sb.from('edit_logs').insert({product_id:pid,field,old_value:ov,new_value:nv,edited_by:currentUser.email});}
 
